@@ -1,5 +1,7 @@
 from DividerList import DividerList
 from Floor import Floor
+from Wall import Wall
+import matplotlib.pyplot as plt
 
 class Building():
 
@@ -17,4 +19,19 @@ class Building():
             if name == floor.name :
                 raise Exception("Sorry, a floor with this name has already been created!")
         return True
+
+    def visualize(self):
+        n = len(self.floors)
+        f, axes = plt.subplot(n, 1, figsize=(15*n, n), sharey = True)
+
+        for i, ax in enumerate(axes.flat):
+            floor = self.floors[i]
+            ax.title('Floor %s ' % floor.name)
+
+            # display dividers
+            for div in floor.dividers :
+                # display only walls
+                if isinstance(div, Wall):
+                    ax.plot(div.p1, div.p2)
+
 
