@@ -17,3 +17,4 @@ class Building():
             if name == floor.name :
                 raise Exception("Sorry, a floor with this name has already been created!")
         return True
+

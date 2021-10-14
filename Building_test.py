@@ -19,6 +19,11 @@ class Building_test(unittest.TestCase):
         with self.assertRaises(Exception):
             building.create_floor(1)
 
+    def test_create_2_floors(self):
+        building = Building('Building')
+        building.create_floor(1)
+        building.create_floor(2)
+        self.assertTrue(building.floors[0].name == 1 and building.floors[1].name == 2)
 
 if __name__ == '__main__':
     unittest.main()
