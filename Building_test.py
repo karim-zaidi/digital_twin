@@ -11,7 +11,7 @@ class Building_test(unittest.TestCase):
     def test_create_single_floor_building(self):
         building = Building('Single Floor Building')
         building.create_floor(1)
-        self.assertIsInstance(building.floors[0], Floor)
+        self.assertIsInstance(building.floors[1], Floor)
 
     def test_duplicate_floors(self):
         building = Building('Building')
@@ -23,7 +23,7 @@ class Building_test(unittest.TestCase):
         building = Building('Building')
         building.create_floor(1)
         building.create_floor(2)
-        self.assertTrue(building.floors[0].name == 1 and building.floors[1].name == 2)
+        self.assertTrue(building.floors[1].name == 1 and building.floors[2].name == 2)
 
 if __name__ == '__main__':
     unittest.main()
