@@ -36,11 +36,11 @@ class Building():
         wall = floor.get_divider_by_id(wall_id)
         assert isinstance(wall, Wall), 'The id does not correspond to a wall but a boundary'
         window = Window(p1, p2)
-        wall.windows.append(window)
+        wall.add_window(window)
 
     def add_door(self, floor_name, wall_id, p1, p2):
         floor = self.floors[floor_name]
         wall = floor.get_divider_by_id(wall_id)
         assert isinstance(wall, Wall), 'The id does not correspond to a wall but a boundary'
         door = Door(p1, p2)
-        wall.doors.append(door)
+        wall.add_door(door)
