@@ -84,12 +84,12 @@ class Building():
                         plt.text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                     
                     for door in div.get_doors() :
-                        x_1, x_2 = window.get_x_coords()
-                        y_1, y_2 = window.get_y_coords()
+                        x_1, x_2 = door.get_x_coords()
+                        y_1, y_2 = door.get_y_coords()
                         plt.plot((x_1,x_2), (y_1, y_2), c='brown', linewidth = '2')    
             
                 # gray point line if boundary
                 if isinstance(div, Boundary):
                     plt.plot((x1,x2), (y1, y2), color='gray', linestyle = ':') # --
 
-            plt.show()
+        plt.show()
