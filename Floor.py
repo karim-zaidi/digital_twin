@@ -11,7 +11,16 @@ class Floor():
         self.dividers = dividers # Dividers can either be walls or boundaries
         self.areas = areas
         self.zones = zones
-
+    
+    def get_dividers(self):
+        return self.dividers
+    
+    def get_areas(self):
+        return self.areas
+    
+    def get_zones(self):
+        return self.zones
+    
     def get_divider_by_id(self, id):
         for d in self.dividers:
             if d.id == id:
