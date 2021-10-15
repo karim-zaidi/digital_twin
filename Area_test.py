@@ -30,7 +30,7 @@ class Area_test(unittest.TestCase):
         self.assertListEqual(area.walls, [wall1, wall2, wall3])
         self.assertListEqual(area.boundaries, [boundary])
 
-    def test_sort_dividers(self):
+    def test_sort_dividers_assertion(self):
         wall1 = Wall((0, 0), (10,0))
         wall2 = Wall((10, 0), (10,10))
         wall3 = Wall((10,10), (0,10))
