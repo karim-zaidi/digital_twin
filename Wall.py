@@ -39,4 +39,10 @@ class Wall(Element):
         assert isinstance(door, Door), 'add_door function takes a door as argument'
         assert self.is_on_top_of(door), 'The door is not on the wall'
         self.doors.append(door)
+    
+    def get_doors(self):
+        return self.doors
+    
+    def get_windows(self):
+        return self.windows
 
