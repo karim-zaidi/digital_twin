@@ -5,7 +5,7 @@ from Boundary import Boundary
 from Window import Window
 from Door import Door
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 class Building():
 
@@ -68,8 +68,12 @@ class Building():
                 ymin, ymax = min(y1,y2), max(y1,y2)
                 plt.text(0.1*xmin + 0.9*xmax, 0.1*ymin +0.9*ymax, str(div.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                 
+                # gray point line if boundary
+                if isinstance(div, Boundary):
+                    plt.plot((x1,x2), (y1, y2), color='gray', linestyle = ':') # --
+                
                 # black line if wall
-                if isinstance(div, Wall):
+                elif isinstance(div, Wall):
                     plt.plot((x1,x2), (y1, y2), color='black')
 
                     for window in div.get_windows() :
@@ -84,12 +88,19 @@ class Building():
                         plt.text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                     
                     for door in div.get_doors() :
-                        x_1, x_2 = window.get_x_coords()
-                        y_1, y_2 = window.get_y_coords()
+                        x_1, x_2 = door.get_x_coords()
+                        y_1, y_2 = door.get_y_coords()
                         plt.plot((x_1,x_2), (y_1, y_2), c='brown', linewidth = '2')    
-            
-                # gray point line if boundary
-                if isinstance(div, Boundary):
-                    plt.plot((x1,x2), (y1, y2), color='gray', linestyle = ':') # --
 
-            plt.show()
+                        # display id
+                        x_min, x_max = min(x_1,x_2), max(x_1,x_2)
+                        y_min, y_max = min(y_1,y_2), max(y_1,y_2)
+                        plt.text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+            
+            # name of the area
+            for area in floor.get_areas():
+                xmin, xmax, ymin, ymax = area.get_corners()
+                plt.text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+
+
+        plt.show()

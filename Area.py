@@ -3,12 +3,22 @@ from Boundary import Boundary
 
 class Area():
     
+    id = 0
+
     def __init__(self, name, dividers):
+        self.id = Area.id
+        Area.id += 1
         self.name = name
         self.walls = []
         self.boundaries = []
         self.add_dividers(dividers.list)
-    
+        
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return self.name
+
     def add_dividers(self, dividers):
         if len(dividers)>0:
             for elem in dividers:
