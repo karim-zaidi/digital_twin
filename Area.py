@@ -5,7 +5,7 @@ class Area():
     
     id = 0
 
-    def __init__(self, name, dividers):
+    def __init__(self, name, dividers = []):
         self.id = Area.id
         Area.id += 1
         self.name = name

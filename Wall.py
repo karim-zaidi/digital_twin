@@ -6,10 +6,11 @@ class Wall(Element):
 
     def __init__(self, p1, p2, windows = [], doors = []):
         super().__init__(p1,p2)
+        #TODO fix how windows and doors are added + vectorize add_window/door ?
         self.windows = windows
         self.doors = doors
 
-    def is_on_top_of(self, e):
+    def is_supporting(self, e):
         assert isinstance(e, Window) or isinstance(e, Door), 'Only a door or a window can be placed on a wall'
 
         wall_x_coords = self.get_x_coords()
@@ -23,21 +24,24 @@ class Wall(Element):
             elif e_x_coords[0] != wall_x_coords[0]: # If the element isn't aligned with the wall return False
                 return False
             return True
-        if wall_y_coords[0] == wall_y_coords[1]: # If the wall is parallel to the x axis, ie. if its two y coords are the same
+        elif wall_y_coords[0] == wall_y_coords[1]: # If the wall is parallel to the x axis, ie. if its two y coords are the same
             if e_y_coords[0] != e_y_coords[1]: # If the element isn't parallel to the x axis return False
                 return False
             elif e_y_coords[0] != wall_y_coords[0]: # If the element isn't aligned with the wall return False
                 return False
             return True
+        else:
+            print('Somehow the wall is not aligned to the x axis nor the y axis. It cannot support a door/window')
+            exit(1)
 
     def add_window(self, window):
         assert isinstance(window, Window), 'add_window function takes a window as argument'
-        assert self.is_on_top_of(window), 'The window is not on the wall'
+        assert self.is_supporting(window), 'The window is not on the wall'
         self.windows.append(window)
 
     def add_door(self, door):
         assert isinstance(door, Door), 'add_door function takes a door as argument'
-        assert self.is_on_top_of(door), 'The door is not on the wall'
+        assert self.is_supporting(door), 'The door is not on the wall'
         self.doors.append(door)
     
     def get_doors(self):

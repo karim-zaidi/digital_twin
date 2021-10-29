@@ -8,8 +8,8 @@ class Floor():
 
     def __init__(self, name, dividers = [], areas = [], zones = []):
         self.name = name
-        self.dividers = dividers # Dividers can either be walls or boundaries
-        self.areas = areas
+        self.add_divider(dividers)
+        self.add_area(areas)
         self.zones = zones
     
     def get_dividers(self):
@@ -28,5 +28,15 @@ class Floor():
         raise ValueError('There is no divider with such an id on this floor (%s)' %str(self.name))
 
     def add_divider(self, divider):
-        assert isinstance(divider, Wall) or isinstance(divider, Boundary), 'The new divider has to be a wall or a boundary'
+        if isinstance(divider[0], list): # If divider is actually (or seems to be) a list of dividers to be added
+            for d in divider:
+                self.add_divider(d)
+        assert isinstance(divider, Wall) or isinstance(divider, Boundary), 'New divider has to be a wall or a boundary'
         self.dividers.append(divider)
+
+    def add_area(self, area):
+        if isinstance(area[0], Area): # If area is actually (or seems to be) a list of areas to be added:
+            for a in area:
+                self.add_area(a)
+        assert isinstance(area, Area), 'New area has to be an Area'
+        self.areas.append(area)

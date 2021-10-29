@@ -4,6 +4,7 @@ from Wall import Wall
 from Boundary import Boundary
 from Window import Window
 from Door import Door
+from Area import Area
 
 import matplotlib.pyplot as plt
 
@@ -13,14 +14,14 @@ class Building():
         self.name = name
         self.floors = {}
 
-    def create_floor(self, name, dividers = DividerList([]), areas = [], zones = []):
+    def create_floor(self, name, dividers = [], areas = [], zones = []):
         if self.check_availability(name):
             floor = Floor(name, dividers, areas, zones)
             self.floors[name] = floor
 
     def check_availability(self, name):
         if name in self.floors.keys() :
-            raise Exception("Sorry, a floor with this name has already been created!")
+            raise Exception("Sorry, a floor with this name already exists")
         return True
 
     def add_wall(self, floor_name, p1, p2):
@@ -46,6 +47,13 @@ class Building():
         assert isinstance(wall, Wall), 'The id does not correspond to a wall but a boundary'
         door = Door(p1, p2)
         wall.add_door(door)
+
+    def add_area(self, floor_name, name, dividers = []):
+        floor = self.floors[floor_name]
+        area = Area(name, dividers)
+        floor.add_area(area)
+
+        
 
     def visualize(self):
         n = len(self.floors)
