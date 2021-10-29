@@ -11,7 +11,7 @@ class Area():
         self.name = name
         self.walls = []
         self.boundaries = []
-        self.add_dividers(dividers.list)
+        self.__add_dividers(dividers.list)
         
     def get_id(self):
         return self.id
@@ -19,7 +19,8 @@ class Area():
     def get_name(self):
         return self.name
 
-    def add_dividers(self, dividers):
+    def __add_dividers(self, dividers):
+        assert isinstance(dividers, (list, tuple))
         if len(dividers)>0:
             for elem in dividers:
                 assert isinstance(elem, Wall) or isinstance(elem, Boundary), "Neither a Wall nor a Boundary"
