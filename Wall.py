@@ -6,9 +6,8 @@ class Wall(Element):
 
     def __init__(self, p1, p2, windows = [], doors = []):
         super().__init__(p1,p2)
-        #TODO fix how windows and doors are added + vectorize add_window/door ?
-        self.windows = windows
-        self.doors = doors
+        self.add_window(windows)
+        self.add_door(doors)
 
     def is_supporting(self, e):
         assert isinstance(e, Window) or isinstance(e, Door), 'Only a door or a window can be placed on a wall'
@@ -35,12 +34,18 @@ class Wall(Element):
             exit(1)
 
     def add_window(self, window):
-        assert isinstance(window, Window), 'add_window function takes a window as argument'
+        if isinstance(window, (list, tuple)):
+            for w in window:
+                self.add_window(w)
+        assert isinstance(window, Window), 'add_window function takes a window/list of windows as argument'
         assert self.is_supporting(window), 'The window is not on the wall'
         self.windows.append(window)
 
     def add_door(self, door):
-        assert isinstance(door, Door), 'add_door function takes a door as argument'
+        if isinstance(door, (list, tuple)):
+            for d in door:
+                self.add_door(d)
+        assert isinstance(door, Door), 'add_door function takes a door/list of doors as argument'
         assert self.is_supporting(door), 'The door is not on the wall'
         self.doors.append(door)
     
