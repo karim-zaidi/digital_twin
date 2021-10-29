@@ -49,11 +49,20 @@ class Building():
         wall.add_door(door)
 
     def add_area(self, floor_name, name, dividers = []):
+        """
+        dividers can be a list/tuple of new dividers or IDs of dividers already on the floor
+        """
         floor = self.floors[floor_name]
-        area = Area(name, dividers)
+        div = []
+        for d in dividers:
+            if isinstance(d, int):
+                div.append(floor.get_divider_by_id(d))
+            else:
+                div.append(d)
+        area = Area(name, div)
         floor.add_area(area)
 
-        
+
 
     def visualize(self):
         n = len(self.floors)

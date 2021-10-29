@@ -11,7 +11,7 @@ class Area():
         self.name = name
         self.walls = []
         self.boundaries = []
-        self.__add_dividers(dividers.list)
+        self.__add_dividers(dividers)
         
     def get_id(self):
         return self.id
