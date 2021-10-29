@@ -6,6 +6,8 @@ class Area():
     id = 0
 
     def __init__(self, name, dividers = []):
+        assert len(dividers) == 4, 'An Area must have 4 dividers (ie a total of 4 walls/boundaries'
+        # TODO assert is_valid ie the 4 dividers define a rectangle
         self.id = Area.id
         Area.id += 1
         self.name = name
