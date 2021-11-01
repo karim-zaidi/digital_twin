@@ -55,10 +55,12 @@ class Element():
 
     # Other methods
     def get_x_coords(self):
-        return (self.__p1[0], self.__p2[0])
+        """Return the coordinates on the x axis in ascending order"""
+        return min(self.__p1[0], self.__p2[0]), max(self.__p1[0], self.__p2[0])
 
     def get_y_coords(self):
-        return (self.__p1[1], self.__p2[1])
+        """Return the coordinates on the y axis in ascending order"""
+        return min(self.__p1[1], self.__p2[1]), max(self.__p1[1], self.__p2[1])
 
     def is_axis_aligned(self):
         return self.__p1[0] == self.__p2[0] or self.__p1[1] == self.__p2[1]
