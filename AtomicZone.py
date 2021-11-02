@@ -41,7 +41,7 @@ class AtomicZone(Zone):
             for a in area:
                 self.add_area(a)
         elif isinstance(area,Area):
-            assert area.is_valid(), 'This area is not valid, in that it does not define a rectangle'
+            assert area.is_valid_area(), 'This area is not valid, in that it does not define a rectangle'
             self.areas.append(area)
 
 
