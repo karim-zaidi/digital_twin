@@ -1,5 +1,7 @@
 from Wall import Wall
 from Boundary import Boundary
+from Point import P
+from Element import Element
 
 class Area():
     
@@ -55,14 +57,52 @@ class Area():
             if isinstance(elem, Boundary):
                 self.boundaries.append(elem)
 
+    
+    def is_valid_area(self):
+        """Returns if the dividers of the area define a non flat rectangle.
+        Done by checking if the 4 dividers are equal to the sides of the bounding box of the area"""
+        dividers = self.walls + self.boundaries
+        assert len(dividers) == 4, 'To be valid, an area must have exactly 4 dividers'
 
-    def get_corners(self):
-        # TODO: replace following assert with assert(self.is_valid) when is_valid is done
-        assert len(self.walls)+len(self.boundaries) == 4, 'To get corners, an area must have 4 walls/boundaries'
+        x_min, x_max, y_min, y_max = self.__get_bounding_box
+
+        # First making sure the area is not flat along the x or y axis
+        # Done by checking if a value repeats in (x_min, x_max, y_min, y_max)
+        l = (x_min, x_max, y_min, y_max)
+        if len(set(l))<len(l):
+            return False
+
+        # North divider
+        N_div = Element(P(x_min,y_max),P(x_max,y_max))
+        if not any(Element.coincide(N_div,div) for div in dividers):
+            return False
+
+        # East divider
+        E_div = Element(P(x_max,y_min),P(x_max,y_max))
+        if not any(Element.coincide(E_div,div) for div in dividers):
+            return False
+
+        # West divider
+        W_div = Element(P(x_min,y_min),P(x_min,y_max))
+        if not any(Element.coincide(W_div,div) for div in dividers):
+            return False
+
+        # South divider
+        S_div = Element(P(x_min,y_min),P(x_max,y_min))
+        if not any(Element.coincide(S_div,div) for div in dividers):
+            return False
+
+        return True
+
+
+    def __get_bounding_box(self):
         x_min = min(x for div in self.walls+self.boundaries for x in div.get_x_coords())
         x_max = max(x for div in self.walls+self.boundaries for x in div.get_x_coords())
         y_min = min(x for div in self.walls+self.boundaries for x in div.get_y_coords())
         y_max = max(x for div in self.walls+self.boundaries for x in div.get_y_coords())
         return (x_min, x_max, y_min, y_max)
 
-
+    
+    def get_corners(self):
+        assert self.is_valid_area()
+        return self.__get_bounding_box

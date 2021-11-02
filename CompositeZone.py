@@ -21,9 +21,9 @@ class CompositeZone(Zone):
     def get_zones(self):
         return self.zones
 
-zone1 = AtomicZone()
-zone2 = AtomicZone()
-zone3 = AtomicZone()
-test = CompositeZone(zone1,[zone2,zone3])
-print(test.zones)
+# zone1 = AtomicZone()
+# zone2 = AtomicZone()
+# zone3 = AtomicZone()
+# test = CompositeZone(zone1,[zone2,zone3])
+# print(test.zones)
     

@@ -15,6 +15,48 @@ class Wall(Element):
         self.__doors = []
         self.add_door(doors)
 
+    
+    # Windows
+    @property
+    def windows(self):
+        return self.__windows  
+
+    def add_window(self, window):
+        """Add single window or multiple windows in a list/tuple"""
+        assert isinstance(window, (Window, list, tuple)), f'add_window function takes a window or list/tuple of windows as argument, no {type(window).__name__}'
+
+        if isinstance(window, (list, tuple)):
+            for w in window:
+                self.add_window(w)
+
+        elif isinstance(window, Window):
+            assert self.__is_supporting(window), 'The window is not on the wall'
+            assert self.__has_room_for(window), 'There is a conflict with some elements of the wall or the wall itself'
+
+            self.windows.append(window)
+    
+
+    # Doors
+    @property
+    def doors(self):
+        return self.__doors
+
+    def add_door(self, door):
+        """Add single door or multiple doors in a list/tuple"""
+        assert isinstance(door, (Door, list, tuple)), f'add_door function takes a door or list/tuple of doors as argument, no {type(door).__name__}'
+
+        if isinstance(door, (list, tuple)):
+            for d in door:
+                self.add_door(d)
+
+        elif isinstance(door, Door):
+            assert self.__is_supporting(door), 'The door is not on the wall'
+            assert self.__has_room_for(door), 'There is a conflict with some elements of the wall or the wall itself'
+
+            self.doors.append(door)
+
+
+    # Methods
     @staticmethod
     def is_inside_element(e1, e2):
         """Check if e1 has a coordinate inside e2"""
@@ -35,7 +77,7 @@ class Wall(Element):
         return True
 
 
-    def __has_space(self, e):
+    def __has_room_for(self, e):
         elements = self.windows + self.doors
 
         for element in elements:
@@ -58,41 +100,4 @@ class Wall(Element):
 
         return (e_x1 >= wall_x1 and e_x2 <= wall_x2) and (e_y1 >= wall_y1 and e_y2 <= wall_y2)
 
-    # Windows
-    @property
-    def windows(self):
-        return self.__windows  
-
-    def add_window(self, window):
-        """Add single window or multiple windows in a list/tuple"""
-        assert isinstance(window, (Window, list, tuple)), f'add_window function takes a window or list/tuple of windows as argument, no {type(window).__name__}'
-
-        if isinstance(window, (list, tuple)):
-            for w in window:
-                self.add_window(w)
-
-        elif isinstance(window, Window):
-            assert self.__is_supporting(window), 'The window is not on the wall'
-            assert self.__has_space(window), 'There is a conflict with some elements of the wall or the wall itself'
-
-            self.windows.append(window)
-    
-    # Doors
-    @property
-    def doors(self):
-        return self.__doors
-
-    def add_door(self, door):
-        """Add single door or multiple doors in a list/tuple"""
-        assert isinstance(door, (Door, list, tuple)), f'add_door function takes a door or list/tuple of doors as argument, no {type(door).__name__}'
-
-        if isinstance(door, (list, tuple)):
-            for d in door:
-                self.add_door(d)
-
-        elif isinstance(door, Door):
-            assert self.__is_supporting(door), 'The door is not on the wall'
-            assert self.__has_space(door), 'There is a conflict with some elements of the wall or the wall itself'
-
-            self.doors.append(door)
 
