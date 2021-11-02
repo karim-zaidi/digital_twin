@@ -6,13 +6,6 @@ class Element():
     __id = 0
 
     def __init__(self, p1, p2):
-        # assert isinstance(p1, (tuple,list)), f'p1 must be either a tuple or a list not a {type(p1).__name__}'
-        # assert isinstance(p2, (tuple,list)), f'p2 must be either a tuple or a list not a {type(p2).__name__}'
-        # assert len(p1) == 2 and len(p2) == 2, 'Each coordinate point must have 2 coordinates'
-        # assert isinstance(p1[0], (int, float)), 'Coordinates must be int of float'
-        # assert isinstance(p1[1], (int, float)), 'Coordinates must be int of float'
-        # assert isinstance(p2[0], (int, float)), 'Coordinates must be int of float'
-        # assert isinstance(p2[1], (int, float)), 'Coordinates must be int of float'
         assert isinstance(p1,P), f'p1 must be a P (point), not a {type(p1).__name__}'
         assert isinstance(p2,P), f'p2 must be a P (point), not a {type(p2).__name__}'
         self.__p1 = p1

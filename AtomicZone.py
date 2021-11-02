@@ -48,25 +48,29 @@ class AtomicZone(Zone):
     @staticmethod
     def is_valid_polygon(pts):
         n = len(pts)
+
         if n==1 or n==2:
             return False
+
+        # Checking that no 3 consecutive vertices define a null angle
         for i in range(n):
             if AtomicZone.angle(pts[i-2],pts[i-1],pts[i]) == 0:
                 return False
+
+        # Testing each segment against the others (except its two neighbors) for an intersection point, which is forbidden
         segments = [(pts[i-1],pts[i]) for i in range(n)]
-        # Testing each segment against the others (except its two neighbors) for an intersection point, which are forbidden
         for i in range(n-2):
             for j in range(i+2,n): # Tests for j<i have already been done (symmetry of the test)
                 if (i,j) != (0,n-1): # So as not to test the first segment against the last one, since they are neighbors
                     if AtomicZone.check_secant(segments[i],segments[j]):
-                        print('Forbidden: these two segments are secant: '+str((segments[i],segments[j])))
+                        print('Invalid polygon: these two segments are secant: '+str((segments[i],segments[j])))
                         return False
         return True
 
 
     @staticmethod
     def check_secant(s1,s2):
-        """Returns if the two segments have any point in common (ie. shared vertex, itersection point, etc...)"""
+        """Returns if the two segments have any point in common (ie. shared vertex, itersection point, etc.)"""
         #xij = x coord for segment i, point j 
         x11 = s1[0].x
         x12 = s1[1].x
@@ -135,13 +139,16 @@ class AtomicZone(Zone):
         param: p2 (P): second point
         param: p3 (P): third point
 
-        returns: angle p1-p2-p3 (int): in degrees, in [-180;180]
+        returns: angle p1-p2-p3 (float): in degrees, in [-180;180]
         """
         point1 = P(p1.x-p2.x, p1.y-p2.y) # p1-p2 ie vector from p2 to p1
         point2 = P(p3.x-p2.x, p3.y-p2.y) # p3-p2 ie vector from p2 to p3
+
         a1 = np.arctan2(point1.y, point1.x)
         a2 = np.arctan2(point2.y, point2.x)
+
         ang = (a2-a1)*180/np.pi
+
         if ang < -180:
             return ang+360
         elif ang > 180:

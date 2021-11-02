@@ -1,3 +1,4 @@
+from matplotlib.pyplot import isinteractive
 from DividerList import DividerList
 from Area import Area
 from Zone import Zone
@@ -17,16 +18,17 @@ class Floor():
 
         self.__zones = zones
     
+
     # name
     @property
     def name(self):
         return self.__name
 
-    # TODO: condition for new_name = int ?
-    # @name.setter
-    # def name(self, new_name):
-    #     assert isinstance(new_name, int)
-    #     self.__name = new_name
+    def rename(self,building,new_name):
+        assert isinstance(new_name,(int,str))
+        if building.check_availability(new_name):
+            self.__name = new_name
+
 
     # dividers
     @property
@@ -58,10 +60,12 @@ class Floor():
         elif isinstance(area, Area):
             self.areas.append(area)
     
+
     # zones
     @property
     def zones(self):
         return self.__zones
+    
     
     # Methods
     def get_divider_by_id(self, id):

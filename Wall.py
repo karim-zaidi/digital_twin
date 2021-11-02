@@ -31,7 +31,7 @@ class Wall(Element):
 
         elif isinstance(window, Window):
             assert self.__is_supporting(window), 'The window is not on the wall'
-            assert self.__has_space(window), 'There is a conflict with some elements of the wall or the wall itself'
+            assert self.__has_room_for(window), 'There is a conflict with some elements of the wall or the wall itself'
 
             self.windows.append(window)
     
@@ -51,7 +51,7 @@ class Wall(Element):
 
         elif isinstance(door, Door):
             assert self.__is_supporting(door), 'The door is not on the wall'
-            assert self.__has_space(door), 'There is a conflict with some elements of the wall or the wall itself'
+            assert self.__has_room_for(door), 'There is a conflict with some elements of the wall or the wall itself'
 
             self.doors.append(door)
 
@@ -77,7 +77,7 @@ class Wall(Element):
         return True
 
 
-    def __has_space(self, e):
+    def __has_room_for(self, e):
         elements = self.windows + self.doors
 
         for element in elements:

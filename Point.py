@@ -9,11 +9,12 @@ class P():
         self.__y = y
 
     
+    # x
     @property
     def x(self):
         return self.__x
 
-
+    # y
     @property
     def y(self):
         return self.__y
