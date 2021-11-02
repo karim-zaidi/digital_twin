@@ -67,7 +67,7 @@ class Wall(Element):
         """Add single window or multiple windows in a list/tuple"""
         assert isinstance(window, (Window, list, tuple)), f'add_window function takes a window or list/tuple of windows as argument, no {type(window).__name__}'
 
-        if isinstance(window, (list, tuple)) and len(window)>0:
+        if isinstance(window, (list, tuple)):
             for w in window:
                 self.add_window(w)
 
@@ -86,7 +86,7 @@ class Wall(Element):
         """Add single door or multiple doors in a list/tuple"""
         assert isinstance(door, (Door, list, tuple)), f'add_door function takes a door or list/tuple of doors as argument, no {type(door).__name__}'
 
-        if isinstance(door, (list, tuple)) and len(door)>0:
+        if isinstance(door, (list, tuple)):
             for d in door:
                 self.add_door(d)
 
