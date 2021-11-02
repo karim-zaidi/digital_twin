@@ -51,33 +51,12 @@ class Wall(Element):
         """Verify if element e is aligned with the wall"""
         assert isinstance(e, Window) or isinstance(e, Door), f'Only a door or a window can be placed on a wall, no {type(e).__name__}.'
 
-        wall_x_coords = self.get_x_coords()
-        wall_y_coords = self.get_y_coords()
-        e_x_coords = e.get_x_coords()
-        e_y_coords = e.get_y_coords()
+        wall_x1,wall_x2 = self.get_x_coords()
+        wall_y1,wall_y2 = self.get_y_coords()
+        e_x1,e_x2 = e.get_x_coords()
+        e_y1,e_y2 = e.get_y_coords()
 
-        # If the wall is parallel to the y axis, ie. if its two x coords are the same
-        if wall_x_coords[0] == wall_x_coords[1]: 
-            # If the element isn't parallel to the y axis return False
-            if e_x_coords[0] != e_x_coords[1]: 
-                return False
-            # If the element isn't aligned with the wall return False
-            elif e_x_coords[0] != wall_x_coords[0]: 
-                return False
-            return True
-        # If the wall is parallel to the x axis, ie. if its two y coords are the same
-        elif wall_y_coords[0] == wall_y_coords[1]: 
-            # If the element isn't parallel to the x axis return False
-            if e_y_coords[0] != e_y_coords[1]: 
-                return False
-            
-            # If the element isn't aligned with the wall return False
-            elif e_y_coords[0] != wall_y_coords[0]: 
-                return False
-            return True
-        else:
-            print('Somehow the wall is not aligned to the x axis nor the y axis. It cannot support a door/window')
-            exit(1)
+        return (e_x1 >= wall_x1 and e_x2 <= wall_x2) and (e_y1 >= wall_y1 and e_y2 <= wall_y2)
 
     # Windows
     @property
@@ -86,7 +65,7 @@ class Wall(Element):
 
     def add_window(self, window):
         """Add single window or multiple windows in a list/tuple"""
-        assert isinstance(window, (Window,list, tuple)), f'add_window function takes a window or list/tuple of windows as argument, no {type(window).__name__}'
+        assert isinstance(window, (Window, list, tuple)), f'add_window function takes a window or list/tuple of windows as argument, no {type(window).__name__}'
 
         if isinstance(window, (list, tuple)) and len(window)>0:
             for w in window:
@@ -96,7 +75,7 @@ class Wall(Element):
             assert self.__is_supporting(window), 'The window is not on the wall'
             assert self.__has_space(window), 'There is a conflict with some elements of the wall or the wall itself'
 
-            self.__windows.append(window)
+            self.windows.append(window)
     
     # Doors
     @property
@@ -115,8 +94,5 @@ class Wall(Element):
             assert self.__is_supporting(door), 'The door is not on the wall'
             assert self.__has_space(door), 'There is a conflict with some elements of the wall or the wall itself'
 
-            self.__doors.append(door)
-        
-        else:
-            self.__doors = []
+            self.doors.append(door)
 

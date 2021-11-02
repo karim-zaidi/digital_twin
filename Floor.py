@@ -23,10 +23,10 @@ class Floor():
         return self.__name
 
     # TODO: condition for new_name = int ?
-    @name.setter
-    def name(self, new_name):
-        assert isinstance(new_name, int)
-        self.__name = new_name
+    # @name.setter
+    # def name(self, new_name):
+    #     assert isinstance(new_name, int)
+    #     self.__name = new_name
 
     # dividers
     @property
@@ -34,8 +34,7 @@ class Floor():
         return self.__dividers
     
     def add_divider(self, divider):
-        # Changed because we have have a problem with __init__ otherwise
-        assert isinstance(divider, (Wall, Boundary, list, tuple)), f'New divider has to be a (or a list/tuple) of wall or a boundary, no {type(divider).__name__}'
+        assert isinstance(divider, (Wall, Boundary, list, tuple)), f'New divider has to be a (or a list/tuple of) wall or a boundary, no {type(divider).__name__}'
         
         if isinstance(divider, (list, tuple)) and len(divider)>0: 
             for d in divider:
@@ -51,7 +50,7 @@ class Floor():
         return self.__areas
     
     def add_area(self, area):
-        assert isinstance(area, (Area, list, tuple)), f'New divider has to be a (or a list/tuple) of area, no {type(area).__name__}'
+        assert isinstance(area, (Area, list, tuple)), f'New divider has to be a (or a list/tuple of) area, no {type(area).__name__}'
         if isinstance(area, (list, tuple)):
             for a in area:
                 self.add_area(a)
