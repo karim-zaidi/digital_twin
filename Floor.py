@@ -7,36 +7,66 @@ from Boundary import Boundary
 class Floor():
 
     def __init__(self, name, dividers = [], areas = [], zones = []):
-        self.name = name
+        self.__name = name
+
+        self.__dividers = []
         self.add_divider(dividers)
+
+        self.__areas = []
         self.add_area(areas)
-        self.zones = zones
+
+        self.__zones = zones
     
-    def get_dividers(self):
-        return self.dividers
+    # name
+    @property
+    def name(self):
+        return self.__name
+
+    # TODO: condition for new_name = int ?
+    # @name.setter
+    # def name(self, new_name):
+    #     assert isinstance(new_name, int)
+    #     self.__name = new_name
+
+    # dividers
+    @property
+    def dividers(self):
+        return self.__dividers
     
-    def get_areas(self):
-        return self.areas
+    def add_divider(self, divider):
+        assert isinstance(divider, (Wall, Boundary, list, tuple)), f'New divider has to be a (or a list/tuple of) wall or a boundary, no {type(divider).__name__}'
+        
+        if isinstance(divider, (list, tuple)) and len(divider)>0: 
+            for d in divider:
+                self.add_divider(d)
     
-    def get_zones(self):
-        return self.zones
+        elif isinstance(divider, (Wall, Boundary)):
+            self.dividers.append(divider)
+        
+
+    # areas
+    @property
+    def areas(self):
+        return self.__areas
     
+    def add_area(self, area):
+        assert isinstance(area, (Area, list, tuple)), f'New divider has to be a (or a list/tuple of) area, no {type(area).__name__}'
+        if isinstance(area, (list, tuple)):
+            for a in area:
+                self.add_area(a)
+        
+        elif isinstance(area, Area):
+            self.areas.append(area)
+    
+    # zones
+    @property
+    def zones(self):
+        return self.__zones
+    
+    # Methods
     def get_divider_by_id(self, id):
         for d in self.dividers:
             if d.id == id:
                 return d
-        raise ValueError('There is no divider with such an id on this floor (%s)' %str(self.name))
+        raise ValueError(f'There is no divider with such an id on this ({self.name}) floor')
 
-    def add_divider(self, divider):
-        if isinstance(divider, (list, tuple)): # If divider is actually (or seems to be) a list of dividers to be added
-            for d in divider:
-                self.add_divider(d)
-        assert isinstance(divider, Wall) or isinstance(divider, Boundary), 'New divider has to be a wall or a boundary'
-        self.dividers.append(divider)
-
-    def add_area(self, area):
-        if isinstance(area, (list, tuple)): # If area is actually (or seems to be) a list of areas to be added
-            for a in area:
-                self.add_area(a)
-        assert isinstance(area, Area), 'New area has to be an Area'
-        self.areas.append(area)

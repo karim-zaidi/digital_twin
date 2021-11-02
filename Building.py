@@ -11,19 +11,36 @@ import matplotlib.pyplot as plt
 class Building():
 
     def __init__(self, name):
-        self.name = name
-        self.floors = {}
+        self.__name = name
+        self.__floors = {}
 
-    def create_floor(self, name, dividers = [], areas = [], zones = []):
-        if self.check_availability(name):
-            floor = Floor(name, dividers, areas, zones)
-            self.floors[name] = floor
+    # name
+    @property
+    def name(self):
+        return self.__name
 
-    def check_availability(self, name):
+    # TODO: condition for new_name = str ?
+    @name.setter
+    def name(self, new_name):
+        assert isinstance(new_name, str)
+        self.__name = new_name
+
+    # floors
+    @property
+    def floors(self):
+        return self.__floors
+    
+    def __check_availability(self, name):
         if name in self.floors.keys() :
             raise Exception("Sorry, a floor with this name already exists")
         return True
-
+    
+    def create_floor(self, name, dividers = [], areas = [], zones = []):
+        if self.__check_availability(name):
+            floor = Floor(name, dividers, areas, zones)
+            self.floors[name] = floor
+    
+    # Other methods
     def add_wall(self, floor_name, p1, p2):
         floor = self.floors[floor_name]
         wall = Wall(p1, p2)
@@ -63,7 +80,7 @@ class Building():
         floor.add_area(area)
 
 
-
+    # TODO: Karim : Polygon part
     def visualize(self):
         n = len(self.floors)
         
