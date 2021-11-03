@@ -4,7 +4,8 @@ from numpy.lib.arraysetops import isin
 class P():
 
     def __init__(self,x,y):
-        assert isinstance(x,(int,float)) and (isinstance(y,(int,float))), 'x and y must be int or float'
+        assert isinstance(x,(int,float)), f'x must be int of float, no {type(x).__name__}'
+        assert isinstance(y,(int,float)), f'y must be int or float, no {type(x).__name__}'
         self.__x = x
         self.__y = y
 
@@ -22,7 +23,7 @@ class P():
     
     # Methods
     def get_coords(self):
-        return (self.x,self.y)
+        return (self.x, self.y)
 
 
     @staticmethod
