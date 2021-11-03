@@ -30,10 +30,6 @@ class Element():
 
     @p1.setter
     def p1(self, new_p1):
-        # assert isinstance(new_p1, (tuple,list)), f'p1 must either be a tuple or a list but not a {type(new_p1).__name__}'
-        # assert len(new_p1) == 2, f'p1 must have 2 coordinates, not {len(new_p1)}'
-        # assert isinstance(new_p1[0], (int, float)), f'Coordinates must be int of float {type(new_p1[0]).__name__}'
-        # assert isinstance(new_p1[1], (int, float)), f'Coordinates must be int of float not {type(new_p1[1]).__name__}'
         assert isinstance(new_p1,P), f'p1 must either be a P (point), not a {type(new_p1).__name__}'
         self.__p1 = new_p1
         assert self.is_axis_aligned(), 'An element must either be aligned with the x or the y axis'
@@ -46,10 +42,6 @@ class Element():
 
     @p2.setter
     def p2(self, new_p2):
-        # assert isinstance(new_p2, (tuple, list)), f'p1 must either be a tuple or a list but not a {type(new_p2).__name__}'
-        # assert len(new_p2) == 2, f'p1 must have 2 coordinates, not {len(new_p2)}'
-        # assert isinstance(new_p2[0], (int, float)), f'Coordinates must be int of float {type(new_p2[0]).__name__}'
-        # assert isinstance(new_p2[1], (int, float)), f'Coordinates must be int of float not {type(new_p2[1]).__name__}'
         assert isinstance(new_p2,P), f'p1 must either be a P (point), not a {type(new_p2).__name__}'
         self.__p2 = new_p2
         assert self.is_axis_aligned(), 'An element must either be aligned with the x or the y axis'

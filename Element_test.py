@@ -9,26 +9,28 @@ class Element_test(unittest.TestCase):
         element = Element(P(0, 0), P(0, 0))
         self.assertIsInstance(element, Element)
 
-    # def test_1_create_element_list(self):
-    #     element = Element(P(0, 0), [0, 0])
-    #     self.assertIsInstance(element, Element)
-
-    def test_2_create_error(self):
+    def test_1_create_element_error(self):
         with self.assertRaises(AssertionError):
-            Element('1, 0', [0, 0])
-            Element({1, 0}, [0, 0])
+            Element('1, 0', P(0, 0))
+        with self.assertRaises(AssertionError):
+            Element(P(1, 0), {0, 0})
+        with self.assertRaises(AssertionError):
+            Element(P(0, 0), (0, 0))
+        with self.assertRaises(AssertionError):
+            Element(P(0, 0), [0, 0])
 
-    def test_3_alignement_error(self):
+
+    def test_2_alignement_error(self):
         with self.assertRaises(AssertionError):
             Element(P(1, 1), P(0, 0))
 
-    def test_4_id_increment(self):
+    def test_3_id_increment(self):
         (x1, y1), (x2, y2) = (0, 0), (10, 0)
         element1 = Element(P(x1, y1), P(x2, y2))
         element2 = Element(P(x1, y1), P(x2, y2))
-        self.assertTrue(element1.id == 2 and element2.id == 3)
+        self.assertTrue(element1.id == 3 and element2.id == 4)
 
-    def test_5_id_error(self):
+    def test_4_id_error(self):
         (x1, y1), (x2, y2) = (0, 0), (10, 0)
         element = Element(P(x1, y1), P(x2, y2))
         with self.assertRaises(AttributeError):
@@ -36,33 +38,37 @@ class Element_test(unittest.TestCase):
         with self.assertRaises(AttributeError):
             element.id = 1
 
-    def test_6_attribut(self):
+    def test_5_attribut(self):
         element = Element(P(0, 0), P(10, 0))
         self.assertTrue(element.p1.x == 0 and element.p1.y == 0)
         self.assertTrue(element.p2.x == 10 and element.p2.y == 0)
 
-    def test_7_attribut_error(self):
+    def test_6_attribut_error(self):
         element = Element(P(0, 0), P(0, 0))
         with self.assertRaises(AttributeError):
             element.__p1
+        with self.assertRaises(AttributeError):
             element.__p2
 
-    # def test_8_attribut_change(self):
-    #     element = Element(P(0, 0), P(10, 0))
-    #     element.p1 = [10, 0]
-    #     element.p2 = (50, 0)
-    #     self.assertTrue(element.p1 == (10, 0) and element.p2 == (50, 0))
+    def test_7_attribut_change(self):
+        element = Element(P(0, 0), P(10, 0))
+        element.p1 = P(10, 0)
+        element.p2 = P(50, 0)
+        self.assertTrue(P.equal(element.p1, P(10,0)) and P.equal(element.p2, P(50,0)))
 
-    def test_9_attribut_change_error(self):
+    def test_8_attribut_change_error(self):
         element = Element(P(0, 0), P(10, 0))
         with self.assertRaises(AssertionError):
             element.p1 = P(30, 30)
 
-    def test_10_get_coord(self):
+    def test_9_get_coord(self):
         element = Element(P(0, 0), P(10, 0))
-        self.assertTrue(element.get_x_coords() == (0, 10)
-                        and element.get_y_coords() == (0, 0))
+        self.assertTrue(element.get_x_coords() == (0, 10) and element.get_y_coords() == (0, 0))
 
+    def test_10_coincide(self):
+        element1 = Element(P(0, 0), P(10, 0))
+        element2 = Element(P(10, 0), P(0, 0))
+        self.assertTrue(Element.coincide(element1, element2))
 
 if __name__ == '__main__':
     unittest.main()
