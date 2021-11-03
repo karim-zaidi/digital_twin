@@ -1,8 +1,10 @@
 import unittest
-from Wall import Wall
-from Window import Window
+
 from Door import Door
 from Point import P
+from Wall import Wall
+from Window import Window
+
 
 class Wall_test(unittest.TestCase):
     def setUp(self):
@@ -129,6 +131,29 @@ class Wall_test(unittest.TestCase):
         self.wall.add_window(window)
         with self.assertRaises(AssertionError):
             self.wall.add_door(door)
+
+
+    def test_14_get_element_by_id(self):
+        window = Window(P(0, 0), P(3,0))
+        self.wall.add_window(window)
+        self.assertEqual(self.wall.get_element_by_id(window.id), window)
+    
+
+    def test_15_get_element_by_id_error(self):
+        with self.assertRaises(ValueError):
+            self.wall.get_element_by_id(42)
+    
+
+    def test_16_remove_element_by_id(self):
+        door = Door(P(1,0), P(5,0))
+        self.wall.add_door(door)
+        self.wall.remove_element_by_id(door.id)
+        self.assertEqual(self.wall.doors, [])
+
+
+    def test_17_remove_element_by_id_error(self):
+        with self.assertRaises(ValueError):
+            self.wall.remove_element_by_id(42)
 
 if __name__ == '__main__':
     unittest.main()

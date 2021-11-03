@@ -104,3 +104,18 @@ class Wall(Element):
         return (e_x1 >= wall_x1 and e_x2 <= wall_x2) and (e_y1 >= wall_y1 and e_y2 <= wall_y2)
 
 
+    def get_element_by_id(self, id):
+        elements = self.windows + self.doors
+        for e in elements:
+            if e.id == id:
+                return e
+        raise ValueError(f'There is no element with such an id on this ({self.id}) wall')
+
+    def remove_element_by_id(self, id):
+        e = self.get_element_by_id(id)
+
+        if isinstance(e, Window):
+            self.windows.remove(e)
+
+        elif isinstance(e, Door):
+            self.doors.remove(e)
