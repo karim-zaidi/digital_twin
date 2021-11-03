@@ -1,13 +1,14 @@
 import unittest
 from Window import Window
+from Point import P
 
 class Window_test(unittest.TestCase):
 
     def test_0_create_window(self):
-        (x1, y1), (x2, y2) = (0, 0), (1,0)
-        window = Window((x1, y1), (x2, y2))
+        p1, p2 = P(0, 0), P(1,0)
+        window = Window(p1, p2)
         self.assertIsInstance(window, Window)
-        self.assertTrue(window.p1 == (x1, y1) and window.p2 == (x2, y2))
+        self.assertTrue(window.p1 == p1 and window.p2 == p2)
 
 if __name__ == '__main__':
     unittest.main()
