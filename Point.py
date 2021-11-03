@@ -1,11 +1,8 @@
-from numpy.lib.arraysetops import isin
-
-
 class P():
 
     def __init__(self,x,y):
-        assert isinstance(x,(int,float)), f'x must be int of float, no {type(x).__name__}'
-        assert isinstance(y,(int,float)), f'y must be int or float, no {type(x).__name__}'
+        assert isinstance(x,(int,float)), f'x must be int of float, not a {type(x).__name__}'
+        assert isinstance(y,(int,float)), f'y must be int or float, not a {type(x).__name__}'
         self.__x = x
         self.__y = y
 
