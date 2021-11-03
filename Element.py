@@ -68,4 +68,3 @@ class Element():
         assert isinstance(e1,Element) and isinstance(e2,Element)
         return (P.equal(e1.p1,e2.p1) and P.equal(e1.p2,e2.p2)) \
             or (P.equal(e1.p1,e2.p2) and P.equal(e1.p2,e2.p1))
-

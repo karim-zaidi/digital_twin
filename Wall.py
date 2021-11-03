@@ -51,7 +51,7 @@ class Wall(Element):
 
         elif isinstance(door, Door):
             assert self.__is_supporting(door), 'The door is not on the wall'
-            assert self.__has_room_for(door), 'There is a conflict with some elements of the wall or the wall itself'
+            assert self.__has_room_for(door), 'There is a conflict with some elements of the wall'
 
             self.doors.append(door)
 
@@ -66,15 +66,20 @@ class Wall(Element):
         e2_x_min, e2_x_max = e2.get_x_coords()
         e2_y_min, e2_y_max = e2.get_y_coords()
 
-        if e1_x_max < e2_x_min or e1_x_max > e2_x_max:
-            return False
-        elif e1_x_min < e2_x_min or e1_x_min > e2_x_max:
-            return False
-        elif e1_y_max < e2_y_min or e1_y_max > e2_y_max:
-            return False
-        elif e1_y_min < e2_y_min or e1_y_min > e2_y_max:
-            return False
-        return True
+        # if it's parallel to the y axis
+        if e1_y_max == e1_y_min:
+            if e1_x_max >= e2_x_min and e1_x_max <= e2_x_max:
+                return True
+            elif e1_x_min >= e2_x_min and e1_x_min <= e2_x_max:
+                return True
+        
+        # elif it's parallel to the x axis
+        elif e1_x_max == e1_x_min:
+            if e1_y_max >= e2_y_min and e1_y_max <= e2_y_max:
+                return True
+            elif e1_y_min >= e2_y_min and e1_y_min <= e2_y_max:
+                return True
+        return False
 
 
     def __has_room_for(self, e):
@@ -84,9 +89,7 @@ class Wall(Element):
             # check if the e has a coordinate inside element
             if self.is_inside_element(e, element) or self.is_inside_element(element, e):
                 return False
-        
-        # check if e is inside the wall
-        return self.is_inside_element(e, self)
+        return True
 
 
     def __is_supporting(self, e):

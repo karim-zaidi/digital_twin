@@ -27,3 +27,6 @@ class P():
     def equal(p1,p2):
         assert isinstance(p1,P) and isinstance(p2,P)
         return p1.x == p2.x and p1.y == p2.y
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.x}, {self.y})"
