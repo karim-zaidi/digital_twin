@@ -146,5 +146,6 @@ class Building():
                 xmin, xmax, ymin, ymax = area.get_corners()
                 plt.text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
 
+            # zone
 
         plt.show()
