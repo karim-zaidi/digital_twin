@@ -43,29 +43,7 @@ class Floor():
     
         elif isinstance(divider, (Wall, Boundary)):
             self.dividers.append(divider)
-        
-
-    # areas
-    @property
-    def areas(self):
-        return self.__areas
     
-    def add_area(self, area):
-        assert isinstance(area, (Area, list, tuple)), f'New divider has to be a (or a list/tuple of) area, no {type(area).__name__}'
-        if isinstance(area, (list, tuple)):
-            for a in area:
-                self.add_area(a)
-        
-        elif isinstance(area, Area):
-            self.areas.append(area)
-    
-
-    # zones
-    @property
-    def zones(self):
-        return self.__zones
-    
-    # Methods
     def get_divider_by_id(self, id):
         for d in self.dividers:
             if d.id == id:
@@ -74,4 +52,42 @@ class Floor():
 
     def remove_divider_by_id(self, id):
         divider = self.get_divider_by_id(id)
-        self.dividers.remove(divider)
+        self.dividers.remove(divider)  
+
+    # areas
+    @property
+    def areas(self):
+        return self.__areas
+    
+    def add_area(self, area):
+        assert isinstance(area, (Area, list, tuple)), f'New area has to be a (or a list/tuple of) area, no {type(area).__name__}'
+        if isinstance(area, (list, tuple)):
+            for a in area:
+                self.add_area(a)
+        
+        elif isinstance(area, Area):
+            self.areas.append(area)
+    
+    def get_area_by_id(self, id):
+        for a in self.areas:
+            if a.id == id:
+                return a
+        raise ValueError(f'There is no area with such an id on this ({self.name}) floor')
+
+    def remove_area_by_id(self, id):
+        area = self.get_area_by_id(id)
+        self.areas.remove(area)
+
+    # zones
+    @property
+    def zones(self):
+        return self.__zones
+    
+    def add_zone(self, zone):
+        assert isinstance(zone, (Zone, list, tuple)), f'New zone has to be a (or a list/tuple of) zone, no {type(zone).__name__}'
+        if isinstance(zone, (list, tuple)):
+            for z in zone:
+                self.add_zone(z)
+        
+        elif isinstance(zone, Zone):
+            self.zones.append(zone)
