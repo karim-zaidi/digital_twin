@@ -1,4 +1,3 @@
-from matplotlib.pyplot import isinteractive
 from DividerList import DividerList
 from Area import Area
 from Zone import Zone
@@ -24,7 +23,7 @@ class Floor():
     def name(self):
         return self.__name
 
-    def rename(self,building,new_name):
+    def rename(self, building, new_name):
         assert isinstance(new_name,(int,str))
         if building.check_availability(new_name):
             self.__name = new_name
@@ -66,7 +65,6 @@ class Floor():
     def zones(self):
         return self.__zones
     
-    
     # Methods
     def get_divider_by_id(self, id):
         for d in self.dividers:
@@ -74,3 +72,6 @@ class Floor():
                 return d
         raise ValueError(f'There is no divider with such an id on this ({self.name}) floor')
 
+    def remove_divider_by_id(self, id):
+        divider = self.get_divider_by_id(id)
+        self.dividers.remove(divider)
