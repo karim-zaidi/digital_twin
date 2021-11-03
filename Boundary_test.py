@@ -1,14 +1,14 @@
 import unittest
 from Boundary import Boundary
+from Point import P
 
 class Boundary_test(unittest.TestCase):
 
     def test_0_create_boundary(self):
-        (x1, y1), (x2, y2) = (0, 0), (10,0)
-        boundary = Boundary((x1, y1), (x2, y2))
+        p1, p2 = P(0, 0), P(10,0)
+        boundary = Boundary(p1, p2)
         self.assertIsInstance(boundary, Boundary)
-        self.assertEqual(boundary.p1, (x1, y1))
-        self.assertEqual(boundary.p2, (x2, y2))
+        self.assertTrue(boundary.p1 == p1 and boundary.p2 == p2)
 
 if __name__ == '__main__':
     unittest.main()
