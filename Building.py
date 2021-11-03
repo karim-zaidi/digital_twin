@@ -7,6 +7,8 @@ from Door import Door
 from Area import Area
 
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle, Polygon
+import random
 
 class Building():
 
@@ -89,63 +91,92 @@ class Building():
         area = Area(name, div)
         floor.add_area(area)
 
+    @staticmethod
+    def get_colors(n):
+        """Generates a list of RGB values at random"""
+        rgb = [] 
+        r = int(random.random() * 256) 
+        g = int(random.random() * 256) 
+        b = int(random.random() * 256) 
+        step = 256 / n 
+        for _ in range(n): 
+            r += step 
+            g += step 
+            b += step
+            r = r % 256 
+            g = g % 256 
+            b = b % 256 
+            rgb.append((r/256,g/256,b/256))  
+        return rgb
 
-    # TODO: Karim : Polygon part
     def visualize(self):
         n = len(self.floors)
         
         # creating the plot
-        plt.figure(figsize=(5, 5*n))
+        f, axes = plt.subplots(2, 1, sharey=True, figsize=(5, 5*n))
 
-        for floor_name in self.floors.keys():
+        for i, floor_name in enumerate(self.floors.keys()):
             floor = self.floors[floor_name]
-            plt.title(f'Floor {floor.name}')
+            axes[i].set_title(f'Floor {floor.name}')
 
             # display dividers and their id
             for div in floor.get_dividers() :
                 
-                x1, x2 = div.get_x_coords()
-                y1, y2 = div.get_y_coords()
+                xmin, xmax = div.get_x_coords()
+                ymin, ymax = div.get_y_coords()
 
                 # display id
-                xmin, xmax = min(x1,x2), max(x1,x2)
-                ymin, ymax = min(y1,y2), max(y1,y2)
-                plt.text(0.1*xmin + 0.9*xmax, 0.1*ymin +0.9*ymax, str(div.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                axes[i].text(0.1*xmin + 0.9*xmax, 0.1*ymin +0.9*ymax, str(div.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                 
                 # gray point line if boundary
                 if isinstance(div, Boundary):
-                    plt.plot((x1,x2), (y1, y2), color='gray', linestyle = ':') # --
+                    axes[i].plot((xmin, xmax), (ymin, ymax), color='gray', linestyle = ':') # --
                 
                 # black line if wall
                 elif isinstance(div, Wall):
-                    plt.plot((x1,x2), (y1, y2), color='black')
+                    axes[i].plot((xmin, xmax), (ymin, ymax), color='black')
 
                     for window in div.get_windows() :
-                        x_1, x_2 = window.get_x_coords()
-                        y_1, y_2 = window.get_y_coords()
-                        x_1, y_1, x_2, y_2 = window.p1, window.p2
-                        plt.plot((x1,x2), (y1, y2), c='blue', linewidth = '2')
+                        x_min, x_max = window.get_x_coords()
+                        y_min, y_max = window.get_y_coords()
+                        axes[i].plot((x_min, x_max), (y_min, y_max), c='blue', linewidth = '2')
 
                         # display id
-                        x_min, x_max = min(x_1,x_2), max(x_1,x_2)
-                        y_min, y_max = min(y_1,y_2), max(y_1,y_2)
-                        plt.text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                        axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                     
                     for door in div.get_doors() :
-                        x_1, x_2 = door.get_x_coords()
-                        y_1, y_2 = door.get_y_coords()
-                        plt.plot((x_1,x_2), (y_1, y_2), c='brown', linewidth = '2')    
+                        x_min, x_max = door.get_x_coords()
+                        y_min, y_max = door.get_y_coords()
+                        axes[i].plot((x_min, x_max), (y_min, y_max), c='brown', linewidth = '2')    
 
                         # display id
-                        x_min, x_max = min(x_1,x_2), max(x_1,x_2)
-                        y_min, y_max = min(y_1,y_2), max(y_1,y_2)
-                        plt.text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                        axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
             
             # name of the area
             for area in floor.get_areas():
-                xmin, xmax, ymin, ymax = area.get_corners()
-                plt.text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                x_min, x_max, y_min, y_max = area.get_corners()
+                axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
 
             # zone
-
+            
+            # generating len(floor.zones) color at random
+            colors = self.get_colors(len(floor.zones))
+            
+            for zone, color in zip(floor.zones, colors):
+                for area in zone.area:
+                    x_min, x_max, y_min, y_max = area.get_bounding_box()
+                    left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
+                    axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color))
+                    
+                    # TODO: Name/Number for the zone?
+                    padding_left = width*0.05
+                    padding_up = height*0.05
+                    padding = min(padding_left, padding_up)
+                    axes[i].text(left + padding, bottom + height - padding, '', c=color, style='italic', ha='left', va='top')
+                
+                # TODO: Karim : Polygon part
+                for polygone in zone.polygone:
+                    #Polygon(array Nx2, True, color=color, alpha=0.1)
+                    pass
+        
         plt.show()
