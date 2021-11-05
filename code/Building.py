@@ -186,7 +186,7 @@ class Building():
             axes[i].set_title(f'Floor {floor.name}')
 
             # display dividers and their id
-            for div in floor.get_dividers() :
+            for div in floor.dividers :
                 
                 xmin, xmax = div.get_x_coords()
                 ymin, ymax = div.get_y_coords()
@@ -202,7 +202,7 @@ class Building():
                 elif isinstance(div, Wall):
                     axes[i].plot((xmin, xmax), (ymin, ymax), color='black')
 
-                    for window in div.get_windows() :
+                    for window in div.windows :
                         x_min, x_max = window.get_x_coords()
                         y_min, y_max = window.get_y_coords()
                         axes[i].plot((x_min, x_max), (y_min, y_max), c='blue', linewidth = '2')
@@ -210,7 +210,7 @@ class Building():
                         # display id
                         axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                     
-                    for door in div.get_doors() :
+                    for door in div.doors :
                         x_min, x_max = door.get_x_coords()
                         y_min, y_max = door.get_y_coords()
                         axes[i].plot((x_min, x_max), (y_min, y_max), c='brown', linewidth = '2')    
@@ -220,7 +220,7 @@ class Building():
             
             # name of the area
             for area in floor.get_areas():
-                x_min, x_max, y_min, y_max = area.get_corners()
+                x_min, x_max, y_min, y_max = area.get_bounding_box()
                 axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
 
             # zone
