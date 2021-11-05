@@ -88,7 +88,7 @@ class Building():
 
     def add_area(self, floor_name, name, dividers = []):
         """
-        dividers can be an ID or list/tuple of IDS of already existing dividers on the floor
+        dividers has to be a list/tuple of 4 IDs of already existing dividers on the floor
         """
         floor = self.floors[floor_name]
 
@@ -142,7 +142,6 @@ class Building():
         composite_zone.add(zone)
 
 
-    # TODO: à finir
     def clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
         # Keeping only relevant timestamps
         filtered_data = data[data[:,0] >= ti]
@@ -158,11 +157,11 @@ class Building():
         filtered_data = d
 
         km = KMeans(n_clusters=n_clusters, init='random', n_init=10, max_iter=300, tol=1e-04, random_state=0)
-        y_km = km.fit_predict()
+        cluster = km.fit_predict()
         
         x = filtered_data[:,1]
         y = filtered_data[:,2]
-        # plt.scatter(x, y, c=y_km) # dans l'idée ... à implémenter avec visualize ??
+        return x, y, cluster
 
 
     @staticmethod
