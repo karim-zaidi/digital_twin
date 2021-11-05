@@ -13,7 +13,7 @@ from Window import Window
 from Door import Door
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, Polygon
+from matplotlib.patches import Rectangle, Polygon, Patch
 import random
 import numpy as np
 from sklearn.cluster import KMeans
@@ -184,16 +184,21 @@ class Building():
     
 
     @staticmethod
-    def __print_zone(zone, zone_id, axes, i, color):
+    def __print_zone(zone, zone_id, axes, i, color, legends):
+        # updating the legend
+        if not Patch(color=color, label=zone_id) in legends:
+            legends.append(Patch(color=color, label=zone_id))
+
+        # drawing the zone
         if isinstance(zone, AtomicZone):
             for area in zone.areas:
                 x_min, x_max, y_min, y_max = area.get_bounding_box()
                 left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
-                axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color, label=zone_id))
+                axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color))
 
             poly = zone.polygon  
             if len(poly) > 0:
-                axes[i].add_patch(Polygon(zone.polygon_to_array(), fill=True, alpha=0.1, color=color, label=zone_id))
+                axes[i].add_patch(Polygon(zone.polygon_to_array(), fill=True, alpha=0.1, color=color))
         
         elif isinstance(zone, CompositeZone):
             for z in zone.zones:
@@ -213,10 +218,11 @@ class Building():
             # so we are adding an additional floor to keep the code simple (and then we will delete it)
             n += 1
             
-            # creating the plot with a good size
-            f, axes = plt.subplots(2, 1, sharey=True, figsize=(10, 10*n))
+            # creating the plot with a good size and 
+            # setting constrained_layout=True to have more freedom for the legend's localisation
+            f, axes = plt.subplots(2, 1, sharey=True, figsize=(10, 10*n), constrained_layout=True)
 
-            for i, floor_name in enumerate(self.floors.keys(), start=1):
+            for i, floor_name in enumerate(self.floors.keys()):
                 
                 floor = self.floors[floor_name]
                 axes[i].set_title(f'Floor {floor.name}')
@@ -261,20 +267,23 @@ class Building():
                 # zone
                 if len(floor.zones) > 0:
                     show_legend = True
+                    legends = []
                     # generating len(floor.zones) color at random
                     colors = Building.get_colors(len(floor.zones))
                     
                     for zone, color in zip(floor.zones, colors):
                         if not zone.is_component:
-                            Building.__print_zone(zone, zone.id, axes, i, color)
+                            Building.__print_zone(zone, zone.id, axes, i, color, legends)
                     
-                if show_legend:        
-                    plt.legend(loc='upper right')
-                
+                if show_legend:
+
+                    axes[i].legend(handles=legends, 
+                                   bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure) # pushing the legend outside
+            
                 # setting the same scales for the x and y axes
                 axes[i].set_aspect('equal', adjustable='box')
 
-            # deleting the inexisting floor
-            f.delaxes(axes[0])
+            # deleting the last (inexisting) floor
+            f.delaxes(axes[n-1])
 
             plt.show()
