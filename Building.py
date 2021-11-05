@@ -1,18 +1,22 @@
-from numpy.lib.arraysetops import isin
+from DividerList import DividerList
+
+from Floor import Floor
+
+from Area import Area
+
 from Zone import Zone
 from AtomicZone import AtomicZone
 from CompositeZone import CompositeZone
-from DividerList import DividerList
-from Floor import Floor
+
 from Wall import Wall
 from Boundary import Boundary
 from Window import Window
 from Door import Door
-from Area import Area
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Polygon
 import random
+
 
 class Building():
 
@@ -137,6 +141,21 @@ class Building():
             b = b % 256 
             rgb.append((r/256,g/256,b/256))  
         return rgb
+    
+    @staticmethod
+    def __print_zone(zone, zone_id, axes, i, color):
+        if isinstance(zone, AtomicZone):
+            for area in zone.areas:
+                x_min, x_max, y_min, y_max = area.get_bounding_box()
+                left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
+                axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color, label=zone_id))
+                
+            for polygone in zone.polygon:
+                axes[i].add_patch(Polygon(polygone.to_array(), fill=True, alpha=0.1, color=color, label=zone_id))
+        
+        elif isinstance(zone, CompositeZone):
+            for z in zone.zones:
+                Building.__print_zone(z, zone_id, axes, i, color)
 
 
     def visualize(self):
@@ -188,25 +207,13 @@ class Building():
                 axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
 
             # zone
-            
+        
             # generating len(floor.zones) color at random
-            colors = self.get_colors(len(floor.zones))
+            colors = Building.get_colors(len(floor.zones))
             
             for zone, color in zip(floor.zones, colors):
-                for area in zone.area:
-                    x_min, x_max, y_min, y_max = area.get_bounding_box()
-                    left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
-                    axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color))
-                    
-                    # TODO: Name/Number for the zone?
-                    padding_left = width*0.05
-                    padding_up = height*0.05
-                    padding = min(padding_left, padding_up)
-                    axes[i].text(left + padding, bottom + height - padding, '', c=color, style='italic', ha='left', va='top')
-                
-                # TODO: Karim : Polygon part
-                for polygone in zone.polygone:
-                    #Polygon(array Nx2, True, color=color, alpha=0.1)
-                    pass
-        
+                if not zone.is_component:
+                    Building.__print_zone(zone, zone.id, axes, i, color)
+
+        plt.legend()
         plt.show()
