@@ -117,6 +117,10 @@ class Area():
             if isinstance(d, Wall) and isinstance(divider, Boundary):
                 self.walls.remove(d)
                 self.boundaries.append(divider)
+                self.__dividers.remove(d)
+                self.__dividers.append(divider)
             elif isinstance(d, Boundary) and isinstance(divider, Wall):
                 self.boundaries.remove(d)
                 self.walls.append(divider)
+                self.__dividers.remove(d)
+                self.__dividers.append(divider)
