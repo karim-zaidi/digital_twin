@@ -210,13 +210,13 @@ class Building():
             show_legend = False
 
             # In the case of a single floor building, we can't loop over the axes of the subplot
-            # so we are faking an additional floor to keep the code simple
+            # so we are adding an additional floor to keep the code simple (and then we will delete it)
             n += 1
             
-            # creating the plot
+            # creating the plot with a good size
             f, axes = plt.subplots(2, 1, sharey=True, figsize=(10, 10*n))
 
-            for i, floor_name in enumerate(self.floors.keys()):
+            for i, floor_name in enumerate(self.floors.keys(), start=1):
                 
                 floor = self.floors[floor_name]
                 axes[i].set_title(f'Floor {floor.name}')
@@ -272,5 +272,9 @@ class Building():
                     plt.legend(loc='upper right')
                 
                 # setting the same scales for the x and y axes
-                plt.gca().set_aspect('equal', adjustable='box')
-                plt.show()
+                axes[i].set_aspect('equal', adjustable='box')
+
+            # deleting the inexisting floor
+            f.delaxes(axes[0])
+
+            plt.show()
