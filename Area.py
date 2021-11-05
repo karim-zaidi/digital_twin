@@ -124,3 +124,9 @@ class Area():
                 self.walls.append(divider)
                 self.__dividers.remove(d)
                 self.__dividers.append(divider)
+
+
+    def contains(self, data):
+        x,y = data[1]
+        x_min, x_max, y_min, y_max = self.get_bounding_box()
+        return x_min<=x<=x_max and y_min<=y<=y_max

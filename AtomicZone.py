@@ -166,3 +166,31 @@ class AtomicZone(Zone):
             return ang
 
     
+    def polygon_contains(self, p):
+        """Return True if point p is contained in the polygon defined by consecutive vertices in pts list
+        
+        param: p (P): point p to check if it is inside the polygon
+        
+        returns: if it's inside (boolean)
+        """
+        pts = self.polygon
+        if any(P.equal(p,pt) for pt in pts): # If p is one of the vertices, then it is 'inside' the polygon
+            return True 
+        epsilon = 1
+        sum = 0
+        for i in range(len(pts)):
+            ang = AtomicZone.angle(pts[i-1], p, pts[i])
+            if ang in (-180,180): # If p is between two consecutive vertices, then it is 'inside' the polygon
+                return True
+            sum += ang
+            # print(ang)
+        # print('sum of angles: %f' %s)
+        return 360-epsilon<=sum<=360+epsilon or -360-epsilon<=sum<=-360+epsilon # epsilon just in case of rounding errors
+
+
+    def contains(self, data):
+        x,y = data[1]
+        p = P(x,y)
+        if any(a.contains(data) for a in self.areas):
+            return True
+        return self.polygon_contains(p)

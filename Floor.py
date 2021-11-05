@@ -93,3 +93,9 @@ class Floor():
         
         elif isinstance(zone, Zone):
             self.zones.append(zone)
+
+    def get_zone_by_id(self, id):
+        for z in self.zones:
+            if z.id == id:
+                return z
+        raise ValueError(f'There is no zone with such an id on this ({self.name}) floor')
