@@ -219,9 +219,9 @@ class Building():
                         axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
             
             # name of the area
-            for area in floor.get_areas():
+            for area in floor.areas:
                 x_min, x_max, y_min, y_max = area.get_bounding_box()
-                axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.get_name()}\n{area.get_id()}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.name}\n{area.id}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
 
             # zone
         
