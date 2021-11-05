@@ -210,6 +210,7 @@ class Building():
         # Keeping only relevant timestamps
         filtered_data = data[data[:,0] >= ti]
         filtered_data = filtered_data[filtered_data[:,0] <= tf]
+        # print(filtered_data)
 
         # Keeping only datapoints inside the zone
         floor = self.floors[floor_name]
@@ -220,11 +221,18 @@ class Building():
                 d.append(datapoint)
         filtered_data = d
 
+        x = filtered_data[:][1]
+        print('x : '+str(x))
+        y = filtered_data[:][2]
+        X = np.zeros((len(x),2))
+        for i in range(len(X)):
+            X[i,0] = x[i][1]
+            X[i,1] = y[i][2]
+        print(X)
+
         km = KMeans(n_clusters=n_clusters, init='random', n_init=10, max_iter=300, tol=1e-04, random_state=0)
-        cluster = km.fit_predict()
+        cluster = km.fit_predict(X)
         
-        x = filtered_data[:,1]
-        y = filtered_data[:,2]
         return x, y, cluster
 
 
