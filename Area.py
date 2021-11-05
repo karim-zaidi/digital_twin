@@ -36,7 +36,7 @@ class Area():
 
     @name.setter
     def name(self, new_name):
-        assert isinstance(new_name, int)
+        assert isinstance(new_name, (int,str))
         self.__name = new_name
 
 
@@ -103,11 +103,13 @@ class Area():
         Y = [y for div in self.__dividers for y in div.get_y_coords()]
         return (min(X), max(X), min(Y), max(Y))
     
+
     def __get_divider_by_id(self, id):
         for d in self.__dividers:
             if d.id == id:
                 return d
         raise ValueError(f'There is no divider with such an id on this ({self.id}) area')
+
 
     def change_divider_by_id(self, id, divider):
         d = self.__get_divider_by_id(id)

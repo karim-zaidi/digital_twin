@@ -9,6 +9,7 @@ from Point import P
 class AtomicZone(Zone):
 
     def __init__(self,area=[],polygon=[]):
+        super().__init__()
         self.__areas = []
         self.add_area(area)
         self.polygon = polygon

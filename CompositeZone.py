@@ -4,6 +4,7 @@ from Zone import Zone
 class CompositeZone(Zone):
 
     def __init__(self, *kargs):
+        super().__init__()
         self.zones = []
         self.add(kargs)
 
@@ -14,12 +15,16 @@ class CompositeZone(Zone):
                 self.add(z)
         elif isinstance(zone,Zone):
             self.zones.append(zone)
+            zone.is_component = True
 
     def remove(self, zone):
         self.zones.remove(zone)
 
     def get_zones(self):
         return self.zones
+
+
+
 
 # zone1 = AtomicZone()
 # zone2 = AtomicZone()

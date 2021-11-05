@@ -1,3 +1,7 @@
+from numpy.lib.arraysetops import isin
+from Zone import Zone
+from AtomicZone import AtomicZone
+from CompositeZone import CompositeZone
 from DividerList import DividerList
 from Floor import Floor
 from Wall import Wall
@@ -91,6 +95,31 @@ class Building():
         area = Area(name, div)
         floor.add_area(area)
 
+
+    def add_atomic_zone(self, floor_name, areas = [], polygon = []):
+        """
+        areas can be an ID or a list/tuple of IDs of already existing areas on the floor
+        """
+        assert len(areas)+len(polygon)>0, 'A new AtomicZone needs at least an area or a polygon'
+        floor = self.floors[floor_name]
+
+        if isinstance(areas,int):
+            ar = floor.get_area_by_id(areas)
+        elif isinstance(areas,(list,tuple)):
+            ar = []
+            for a in areas:
+                ar.append(floor.get_area_by_id(a))
+                
+        ato_zone = AtomicZone(ar,polygon)
+        floor.add_zone(ato_zone)
+
+
+    def merge_zone(self, floor_name, zone, composite_zone):
+        assert isinstance(zone,Zone)
+        assert isinstance(composite_zone,CompositeZone)
+        composite_zone.add(zone)
+
+
     @staticmethod
     def get_colors(n):
         """Generates a list of RGB values at random"""
@@ -108,6 +137,7 @@ class Building():
             b = b % 256 
             rgb.append((r/256,g/256,b/256))  
         return rgb
+
 
     def visualize(self):
         n = len(self.floors)

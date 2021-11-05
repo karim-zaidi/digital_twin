@@ -15,7 +15,8 @@ class Floor():
         self.__areas = []
         self.add_area(areas)
 
-        self.__zones = zones
+        self.__zones = []
+        self.add_zone(zones)
     
 
     # name
@@ -77,6 +78,7 @@ class Floor():
     def remove_area_by_id(self, id):
         area = self.get_area_by_id(id)
         self.areas.remove(area)
+
 
     # zones
     @property
