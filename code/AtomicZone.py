@@ -26,6 +26,7 @@ class AtomicZone(Zone):
     def polygon(self):
         return self.__polygon
 
+
     @polygon.setter
     def polygon(self, polygon):
         assert isinstance(polygon, (list,tuple))

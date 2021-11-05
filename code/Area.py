@@ -34,6 +34,7 @@ class Area():
     def name(self):
         return self.__name
 
+
     @name.setter
     def name(self, new_name):
         assert isinstance(new_name, (int,str))

@@ -8,6 +8,7 @@ class CompositeZone(Zone):
         self.zones = []
         self.add(zones)
 
+
     # Composition Pattern methods
     def add(self, zone):
         assert isinstance(zone,(Zone,list,tuple))
@@ -18,8 +19,10 @@ class CompositeZone(Zone):
             self.zones.append(zone)
             zone.is_component = True
 
+
     def remove(self, zone):
         self.zones.remove(zone)
+
 
     def get_zones(self):
         return self.zones

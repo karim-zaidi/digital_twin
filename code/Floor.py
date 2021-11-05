@@ -17,10 +17,12 @@ class Floor():
         self.__zones = []
         self.add_zone(zones)
 
+
     # name
     @property
     def name(self):
         return self.__name
+
 
     def rename(self, building, new_name):
         assert isinstance(new_name,(int,str))
@@ -33,6 +35,7 @@ class Floor():
     def dividers(self):
         return self.__dividers
     
+
     def add_divider(self, divider):
         assert isinstance(divider, (Wall, Boundary, list, tuple)), f'New divider has to be a (or a list/tuple of) wall or a boundary, no {type(divider).__name__}'
         
@@ -43,21 +46,25 @@ class Floor():
         elif isinstance(divider, (Wall, Boundary)):
             self.dividers.append(divider)
             
+
     def get_divider_by_id(self, id):
         for d in self.dividers:
             if d.id == id:
                 return d
         raise ValueError(f'There is no divider with such an id on this ({self.name}) floor')
 
+
     def remove_divider_by_id(self, id):
         divider = self.get_divider_by_id(id)
         self.dividers.remove(divider)  
+
 
     # areas
     @property
     def areas(self):
         return self.__areas
     
+
     def add_area(self, area):
         assert isinstance(area, (Area, list, tuple)), f'New area has to be a (or a list/tuple of) area, no {type(area).__name__}'
         if isinstance(area, (list, tuple)):
@@ -67,11 +74,13 @@ class Floor():
         elif isinstance(area, Area):
             self.areas.append(area)
     
+
     def get_area_by_id(self, id):
         for a in self.areas:
             if a.id == id:
                 return a
         raise ValueError(f'There is no area with such an id on this ({self.name}) floor')
+
 
     def remove_area_by_id(self, id):
         area = self.get_area_by_id(id)
@@ -83,6 +92,7 @@ class Floor():
     def zones(self):
         return self.__zones
     
+
     def add_zone(self, zone):
         assert isinstance(zone, (Zone, list, tuple)), f'New zone has to be a (or a list/tuple of) zone, no {type(zone).__name__}'
         if isinstance(zone, (list, tuple)):
@@ -91,6 +101,7 @@ class Floor():
         
         elif isinstance(zone, Zone):
             self.zones.append(zone)
+
 
     def get_zone_by_id(self, id):
         for z in self.zones:

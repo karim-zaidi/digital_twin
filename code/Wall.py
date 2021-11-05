@@ -21,6 +21,7 @@ class Wall(Element):
     def windows(self):
         return self.__windows  
 
+
     def add_window(self, window):
         """Add single window or multiple windows in a list/tuple"""
         assert isinstance(window, (Window, list, tuple)), f'add_window function takes a window or list/tuple of windows as argument, no {type(window).__name__}'
@@ -40,6 +41,7 @@ class Wall(Element):
     @property
     def doors(self):
         return self.__doors
+
 
     def add_door(self, door):
         """Add single door or multiple doors in a list/tuple"""
@@ -110,6 +112,7 @@ class Wall(Element):
             if e.id == id:
                 return e
         raise ValueError(f'There is no element with such an id on this ({self.id}) wall')
+
 
     def remove_element_by_id(self, id):
         e = self.get_element_by_id(id)

@@ -28,6 +28,7 @@ class Element():
     def p1(self):
         return self.__p1
 
+
     @p1.setter
     def p1(self, new_p1):
         assert isinstance(new_p1,P), f'p1 must either be a P (point), not a {type(new_p1).__name__}'
@@ -39,6 +40,7 @@ class Element():
     @property
     def p2(self):
         return self.__p2
+
 
     @p2.setter
     def p2(self, new_p2):

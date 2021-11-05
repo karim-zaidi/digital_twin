@@ -31,6 +31,7 @@ class Building():
     def name(self):
         return self.__name
 
+
     @name.setter
     def name(self, new_name):
         assert isinstance(new_name, str)
@@ -42,15 +43,18 @@ class Building():
     def floors(self):
         return self.__floors
     
+
     def check_availability(self, name):
         if name in self.floors.keys() :
             raise Exception("Sorry, a floor with this name already exists")
         return True
     
+
     def create_floor(self, name, dividers = [], areas = [], zones = []):
         if self.check_availability(name):
             floor = Floor(name, dividers, areas, zones)
             self.floors[name] = floor
+
 
     def rename_floor(self,floor_name,new_name):
         floor = self.floors[floor_name]
