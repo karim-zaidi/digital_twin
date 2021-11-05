@@ -197,11 +197,11 @@ class Building():
             for area in zone.areas:
                 x_min, x_max, y_min, y_max = area.get_bounding_box()
                 # using Polygon instead of Rectangle to have the same color
-                axes[i].add_patch(Polygon(np.array([[x_min, y_min], [x_min, y_max], [x_max, y_max], [x_max, y_min]]), fill=True, alpha=0.1, color=color))
+                axes[i].add_patch(Polygon(np.array([[x_min, y_min], [x_min, y_max], [x_max, y_max], [x_max, y_min]]), fill=True, alpha=0.3, color=color))
 
             poly = zone.polygon  
             if len(poly) > 0:
-                axes[i].add_patch(Polygon(zone.polygon_to_array(), fill=True, alpha=0.1, color=color))
+                axes[i].add_patch(Polygon(zone.polygon_to_array(), fill=True, alpha=0.3, color=color))
         
         elif isinstance(zone, CompositeZone):
             for z in zone.zones:
