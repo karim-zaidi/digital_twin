@@ -109,12 +109,12 @@ class Building():
             ar = []
             for a in areas:
                 ar.append(floor.get_area_by_id(a))
-                
+
         ato_zone = AtomicZone(ar,polygon)
         floor.add_zone(ato_zone)
 
 
-    def merge_zone(self, floor_name, zone, composite_zone):
+    def merge_zone(self, zone, composite_zone):
         assert isinstance(zone,Zone)
         assert isinstance(composite_zone,CompositeZone)
         composite_zone.add(zone)
