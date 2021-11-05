@@ -1,3 +1,4 @@
+from sklearn.utils import _print_elapsed_time
 from Floor import Floor
 
 from Area import Area
@@ -14,6 +15,8 @@ from Door import Door
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Polygon
 import random
+import numpy as np
+from sklearn.cluster import KMeans
 
 
 class Building():
@@ -137,6 +140,29 @@ class Building():
         assert isinstance(zone,Zone)
         assert isinstance(composite_zone,CompositeZone)
         composite_zone.add(zone)
+
+
+    # TODO: à finir
+    def clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
+        # Keeping only relevant timestamps
+        filtered_data = data[data[:,0] >= ti]
+        filtered_data = filtered_data[filtered_data[:,0] <= tf]
+
+        # Keeping only datapoints inside the zone
+        floor = self.floors[floor_name]
+        zone = floor.get_zone_by_id(zone_id)
+        d = []
+        for datapoint in filtered_data:
+            if zone.contains(datapoint):
+                d.append(datapoint)
+        filtered_data = d
+
+        km = KMeans(n_clusters=n_clusters, init='random', n_init=10, max_iter=300, tol=1e-04, random_state=0)
+        y_km = km.fit_predict()
+        
+        x = filtered_data[:,1]
+        y = filtered_data[:,2]
+        # plt.scatter(x, y, c=y_km) # dans l'idée ... à implémenter avec visualize ??
 
 
     @staticmethod

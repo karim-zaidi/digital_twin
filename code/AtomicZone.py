@@ -188,9 +188,9 @@ class AtomicZone(Zone):
         return 360-epsilon<=sum<=360+epsilon or -360-epsilon<=sum<=-360+epsilon # epsilon just in case of rounding errors
 
 
-    def contains(self, data):
-        x,y = data[1]
+    def contains(self, datapoint):
+        x,y = datapoint[1],datapoint[2]
         p = P(x,y)
-        if any(a.contains(data) for a in self.areas):
+        if any(a.contains(datapoint) for a in self.areas):
             return True
         return self.polygon_contains(p)
