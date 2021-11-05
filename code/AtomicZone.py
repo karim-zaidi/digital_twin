@@ -48,9 +48,9 @@ class AtomicZone(Zone):
 
     def polygon_to_array(self):
         n = len(self.polygon)
-        array = np.array(len(n),2)
+        array = np.zeros((n,2))
         for i in range(n):
-            array[i] = self.polygon[i].get_coords()
+            array[i,0], array[i,1] = self.polygon[i].get_coords()
         return array
 
 

@@ -13,7 +13,7 @@ from Window import Window
 from Door import Door
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, Polygon, Patch
+from matplotlib.patches import Polygon, Patch
 import random
 import numpy as np
 from sklearn.cluster import KMeans
@@ -104,7 +104,7 @@ class Building():
         """
         areas can be an ID or a list/tuple of IDs of already existing areas on the floor
         """
-        assert len(areas)+len(polygon)>0, 'A new AtomicZone needs at least an area or a polygon'
+        assert len(list(areas))+len(polygon)>0, 'A new AtomicZone needs at least an area or a polygon'
         floor = self.floors[floor_name]
 
         if isinstance(areas,int):
@@ -122,7 +122,7 @@ class Building():
         """
         zones can be an ID or a list/tuple of IDs of already existing zones on the floor
         """
-        assert len(zones)>0, 'A new composite zone needs at least one component zone'
+        assert zones != None and zones != [] and zones != (), 'A new composite zone needs at least one component zone'
         floor = self.floors[floor_name]
 
         if isinstance(zones,int):
@@ -136,10 +136,13 @@ class Building():
         floor.add_zone(composite_zone)
 
 
-    def merge_zone(self, zone, composite_zone):
-        assert isinstance(zone,Zone)
-        assert isinstance(composite_zone,CompositeZone)
-        composite_zone.add(zone)
+    def merge_zone(self, floor_name, zone, composite_zone):
+        floor = self.floors[floor_name]
+        z = floor.get_zone_by_id(zone)
+        composite_z = floor.get_zone_by_id(composite_zone)
+        assert isinstance(z,Zone)
+        assert isinstance(composite_z,CompositeZone)
+        composite_z.add(z)
 
 
     def clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
@@ -186,15 +189,15 @@ class Building():
     @staticmethod
     def __print_zone(zone, zone_id, axes, i, color, legends):
         # updating the legend
-        if not Patch(color=color, label=zone_id) in legends:
+        if (not Patch(color=color, label=zone_id) in legends) and (not zone.is_component):
             legends.append(Patch(color=color, label=zone_id))
 
         # drawing the zone
         if isinstance(zone, AtomicZone):
             for area in zone.areas:
                 x_min, x_max, y_min, y_max = area.get_bounding_box()
-                left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
-                axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color))
+                # using Polygon instead of Rectangle to have the same color
+                axes[i].add_patch(Polygon(np.array([[x_min, y_min], [x_min, y_max], [x_max, y_max], [x_max, y_min]]), fill=True, alpha=0.1, color=color))
 
             poly = zone.polygon  
             if len(poly) > 0:
@@ -202,7 +205,7 @@ class Building():
         
         elif isinstance(zone, CompositeZone):
             for z in zone.zones:
-                Building.__print_zone(z, zone_id, axes, i, color)
+                Building.__print_zone(z, zone_id, axes, i, color, legends)
 
 
     def visualize(self):
@@ -220,7 +223,7 @@ class Building():
             
             # creating the plot with a good size and 
             # setting constrained_layout=True to have more freedom for the legend's localisation
-            f, axes = plt.subplots(2, 1, sharey=True, figsize=(10, 10*n), constrained_layout=True)
+            f, axes = plt.subplots(n, 1, sharey=True, figsize=(10, 10*n), constrained_layout=True)
 
             for i, floor_name in enumerate(self.floors.keys()):
                 
