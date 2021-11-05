@@ -19,6 +19,8 @@ class Area():
 
         assert self.is_valid_area()
 
+        self.__is_used = 0
+
         self.__id = Area.__id
         Area.__id += 1
 
@@ -51,6 +53,12 @@ class Area():
     @property
     def boundaries(self):
         return self.__boundaries
+
+
+    # is_used
+    @property
+    def is_used(self):
+        return self.__is_used
 
 
     # Methods
@@ -131,3 +139,11 @@ class Area():
         x,y = datapoint[1],datapoint[2]
         x_min, x_max, y_min, y_max = self.get_bounding_box()
         return x_min<=x<=x_max and y_min<=y<=y_max
+
+
+    def is_now_used(self):
+        self.__is_used += 1
+
+
+    def is_no_longer_used(self):
+        self.__is_used -= 1

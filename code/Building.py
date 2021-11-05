@@ -1,3 +1,4 @@
+from numpy.lib.arraysetops import isin
 from sklearn.utils import _print_elapsed_time
 from Floor import Floor
 
@@ -68,10 +69,26 @@ class Building():
         floor.add_divider(wall)
 
 
+    def remove_wall(self, floor_name, id):
+        floor = self.floors[floor_name]
+        wall = floor.get_divider_by_id(id)
+        assert isinstance(wall, Wall), 'This ID does not correspond to a wall'
+        assert not wall.is_used, 'This wall cannot be removed as it is used in an area'
+        floor.remove_divider_by_id(id)
+
+
     def add_boundary(self, floor_name, p1, p2):
         floor = self.floors[floor_name]
         boundary = Boundary(p1, p2)
         floor.add_divider(boundary)
+
+
+    def remove_boundary(self, floor_name, id):
+        floor = self.floors[floor_name]
+        boundary = floor.get_divider_by_id(id)
+        assert isinstance(boundary, Boundary), 'This ID does not correspond to a boundary'
+        assert not boundary.is_used, 'This boundary cannot be removed as it is used in an area'
+        floor.remove_divider_by_id(id)
 
 
     def add_window(self, floor_name, wall_id, p1, p2):
@@ -80,6 +97,19 @@ class Building():
         assert isinstance(wall, Wall), 'The id does not correspond to a wall but a boundary'
         window = Window(p1, p2)
         wall.add_window(window)
+
+    
+    def remove_window(self, floor_name, id):
+        floor = self.floors[floor_name]
+        done = False
+        for wall in floor.dividers:
+            if isinstance(wall, Wall):
+                for window in wall.windows:
+                    if window.id == id:
+                        wall.remove_element_by_id(id)
+                        done = True
+        if not done:
+            raise ValueError(f'There is no window with such an id on this ({floor_name}) floor')
 
 
     def add_door(self, floor_name, wall_id, p1, p2):
@@ -90,6 +120,19 @@ class Building():
         wall.add_door(door)
 
 
+    def remove_door(self, floor_name, id):
+        floor = self.floors[floor_name]
+        done = False
+        for wall in floor.dividers:
+            if isinstance(wall, Wall):
+                for door in wall.doors:
+                    if door.id == id:
+                        wall.remove_element_by_id(id)
+                        done = True
+        if not done:
+            raise ValueError(f'There is no door with such an id on this ({floor_name}) floor')
+
+
     def add_area(self, floor_name, name, dividers = []):
         """
         dividers has to be a list/tuple of 4 IDs of already existing dividers on the floor
@@ -98,10 +141,21 @@ class Building():
 
         div = []
         for d in dividers:
-            div.append(floor.get_divider_by_id(d))
+            divider = floor.get_divider_by_id(d)
+            divider.is_now_used()
+            div.append(divider)
             
         area = Area(name, div)
         floor.add_area(area)
+
+
+    def remove_area(self, floor_name, id):
+        floor = self.floors[floor_name]
+        area = floor.get_area_by_id(id)
+        assert not area.is_used, 'This area cannot be removed as it is used in a zone'
+        for divider in area.walls+area.boundaries:
+            divider.is_no_longer_used()
+        floor.remove_area_by_id(id)
 
 
     def add_atomic_zone(self, floor_name, areas = [], polygon = []):
@@ -112,13 +166,16 @@ class Building():
         floor = self.floors[floor_name]
 
         if isinstance(areas,int):
-            ar = floor.get_area_by_id(areas)
+            areas_temp = floor.get_area_by_id(areas)
+            areas_temp.is_now_used()
         elif isinstance(areas,(list,tuple)):
-            ar = []
+            areas_temp = []
             for a in areas:
-                ar.append(floor.get_area_by_id(a))
+                area = floor.get_area_by_id(a)
+                area.is_now_used()
+                areas_temp.append(area)
 
-        atomic_zone = AtomicZone(ar,polygon)
+        atomic_zone = AtomicZone(areas_temp,polygon)
         floor.add_zone(atomic_zone)
 
     
@@ -130,13 +187,13 @@ class Building():
         floor = self.floors[floor_name]
 
         if isinstance(zones,int):
-            zo = floor.get_zone_by_id(zones)
+            zones_temp = floor.get_zone_by_id(zones)
         elif isinstance(zones,(list,tuple)):
-            zo = []
+            zones_temp = []
             for z in zones:
-                zo.append(floor.get_zone_by_id(z))
+                zones_temp.append(floor.get_zone_by_id(z))
 
-        composite_zone = CompositeZone(zo)
+        composite_zone = CompositeZone(zones_temp)
         floor.add_zone(composite_zone)
 
 
@@ -149,7 +206,7 @@ class Building():
         composite_z.add(z)
 
 
-    def clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
+    def __clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
         # Keeping only relevant timestamps
         filtered_data = data[data[:,0] >= ti]
         filtered_data = filtered_data[filtered_data[:,0] <= tf]
@@ -169,6 +226,11 @@ class Building():
         x = filtered_data[:,1]
         y = filtered_data[:,2]
         return x, y, cluster
+
+
+    def visualize_clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
+        x, y, cluster = self.__clusters(floor_name, data, zone_id, n_clusters, ti , tf)
+        self.__draw(True, floor_name, x, y, cluster)
 
 
     @staticmethod
@@ -213,6 +275,10 @@ class Building():
 
 
     def visualize(self):
+        self.__draw(test=False, name=None, x=None, y=None, cluster_name=None)
+
+
+    def __draw(self, test, name, x, y, cluster_name):
         n = len(self.floors)
 
         if n == 0:
@@ -233,7 +299,7 @@ class Building():
                 
                 floor = self.floors[floor_name]
                 axes[i].set_title(f'Floor {floor.name}')
-
+                
                 # display dividers and their id
                 for div in floor.dividers :
                     xmin, xmax = div.get_x_coords()
@@ -290,6 +356,13 @@ class Building():
                 # setting the same scales for the x and y axes
                 axes[i].set_aspect('equal', adjustable='box')
 
+                if test and floor_name == name:
+                    # number of color needed
+                    m = len(set(cluster_name[4]))
+                    # taking m different colors
+                    c = [i for i in range(m)]
+                    axes[i].scatter(x, y, c=[c[i] for i in cluster_name[4]])
+                    
             # deleting the last (inexisting) floor
             f.delaxes(axes[n-1])
 

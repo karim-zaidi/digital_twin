@@ -12,6 +12,8 @@ class Element():
         self.__p2 = p2
         assert self.is_axis_aligned(), 'An element must either be aligned with the x or the y axis'
 
+        self.__is_used = 0
+
         # Each element (door, boundary(=invisible/open wall), door, window) has a unique unchanged id
         self.__id = Element.__id
         Element.__id += 1
@@ -49,6 +51,12 @@ class Element():
         assert self.is_axis_aligned(), 'An element must either be aligned with the x or the y axis'
 
 
+    # is_used
+    @property
+    def is_used(self):
+        return self.__is_used
+
+
     # Other methods
     def get_x_coords(self):
         """Return the coordinates on the x axis in ascending order"""
@@ -70,3 +78,11 @@ class Element():
         assert isinstance(e1,Element) and isinstance(e2,Element)
         return (P.equal(e1.p1,e2.p1) and P.equal(e1.p2,e2.p2)) \
             or (P.equal(e1.p1,e2.p2) and P.equal(e1.p2,e2.p1))
+
+
+    def is_now_used(self):
+        self.__is_used += 1
+
+
+    def is_no_longer_used(self):
+        self.__is_used -= 1
