@@ -87,15 +87,14 @@ class Building():
 
     def add_area(self, floor_name, name, dividers = []):
         """
-        dividers can be a list/tuple of new dividers or IDs of dividers already on the floor
+        dividers can be an ID or list/tuple of IDS of already existing dividers on the floor
         """
         floor = self.floors[floor_name]
+
         div = []
         for d in dividers:
-            if isinstance(d, int):
-                div.append(floor.get_divider_by_id(d))
-            else:
-                div.append(d)
+            div.append(floor.get_divider_by_id(d))
+            
         area = Area(name, div)
         floor.add_area(area)
 
@@ -134,7 +133,6 @@ class Building():
 
         composite_zone = CompositeZone(zo)
         floor.add_zone(composite_zone)
-
 
 
     def merge_zone(self, zone, composite_zone):
