@@ -202,60 +202,75 @@ class Building():
 
     def visualize(self):
         n = len(self.floors)
+
+        if n == 0:
+            print('Building is empty!')
         
-        # creating the plot
-        f, axes = plt.subplots(2, 1, sharey=True, figsize=(5, 5*n))
+        else:
+            show_legend = False
 
-        for i, floor_name in enumerate(self.floors.keys()):
-            floor = self.floors[floor_name]
-            axes[i].set_title(f'Floor {floor.name}')
+            # In the case of a single floor building, we can't loop over the axes of the subplot
+            # so we are faking an additional floor to keep the code simple
+            n += 1
+            
+            # creating the plot
+            f, axes = plt.subplots(2, 1, sharey=True, figsize=(10, 10*n))
 
-            # display dividers and their id
-            for div in floor.dividers :
+            for i, floor_name in enumerate(self.floors.keys()):
                 
-                xmin, xmax = div.get_x_coords()
-                ymin, ymax = div.get_y_coords()
+                floor = self.floors[floor_name]
+                axes[i].set_title(f'Floor {floor.name}')
 
-                # display id
-                axes[i].text(0.1*xmin + 0.9*xmax, 0.1*ymin +0.9*ymax, str(div.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
-                
-                # gray point line if boundary
-                if isinstance(div, Boundary):
-                    axes[i].plot((xmin, xmax), (ymin, ymax), color='gray', linestyle = ':') # --
-                
-                # black line if wall
-                elif isinstance(div, Wall):
-                    axes[i].plot((xmin, xmax), (ymin, ymax), color='black')
+                # display dividers and their id
+                for div in floor.dividers :
+                    xmin, xmax = div.get_x_coords()
+                    ymin, ymax = div.get_y_coords()
 
-                    for window in div.windows :
-                        x_min, x_max = window.get_x_coords()
-                        y_min, y_max = window.get_y_coords()
-                        axes[i].plot((x_min, x_max), (y_min, y_max), c='blue', linewidth = '2')
-
-                        # display id
-                        axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                    # display id
+                    axes[i].text(0.1*xmin + 0.9*xmax, 0.1*ymin +0.9*ymax, str(div.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
                     
-                    for door in div.doors :
-                        x_min, x_max = door.get_x_coords()
-                        y_min, y_max = door.get_y_coords()
-                        axes[i].plot((x_min, x_max), (y_min, y_max), c='brown', linewidth = '2')    
+                    # gray point line if boundary
+                    if isinstance(div, Boundary):
+                        axes[i].plot((xmin, xmax), (ymin, ymax), color='gray', linestyle = ':') # --
+                    
+                    # black line if wall
+                    elif isinstance(div, Wall):
+                        axes[i].plot((xmin, xmax), (ymin, ymax), color='black')
 
-                        # display id
-                        axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
-            
-            # name of the area
-            for area in floor.areas:
-                x_min, x_max, y_min, y_max = area.get_bounding_box()
-                axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.name}\n{area.id}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                        for window in div.windows :
+                            x_min, x_max = window.get_x_coords()
+                            y_min, y_max = window.get_y_coords()
+                            axes[i].plot((x_min, x_max), (y_min, y_max), c='cyan')
 
-            # zone
-        
-            # generating len(floor.zones) color at random
-            colors = Building.get_colors(len(floor.zones))
-            
-            for zone, color in zip(floor.zones, colors):
-                if not zone.is_component:
-                    Building.__print_zone(zone, zone.id, axes, i, color)
+                            # display id
+                            axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                        
+                        for door in div.doors :
+                            x_min, x_max = door.get_x_coords()
+                            y_min, y_max = door.get_y_coords()
+                            axes[i].plot((x_min, x_max), (y_min, y_max), c='chocolate')    
 
-        plt.legend()
-        plt.show()
+                            # display id
+                            axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(door.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+                
+                # name of the area
+                for area in floor.areas:
+                    x_min, x_max, y_min, y_max = area.get_bounding_box()
+                    axes[i].text((x_min + x_max)/2, (y_min + y_max)/2, f'{area.name}\n{area.id}', c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
+
+                # zone
+                if len(floor.zones) > 0:
+                    show_legend = True
+                    # generating len(floor.zones) color at random
+                    colors = Building.get_colors(len(floor.zones))
+                    
+                    for zone, color in zip(floor.zones, colors):
+                        if not zone.is_component:
+                            Building.__print_zone(zone, zone.id, axes, i, color)
+                    
+                if show_legend:        
+                    plt.legend(loc='upper right')
+                
+                # setting the same scales for the x and y axes
+                plt.gca().set_aspect('equal', adjustable='box')
+                plt.show()

@@ -16,7 +16,6 @@ class Floor():
 
         self.__zones = []
         self.add_zone(zones)
-    
 
     # name
     @property
@@ -43,7 +42,7 @@ class Floor():
     
         elif isinstance(divider, (Wall, Boundary)):
             self.dividers.append(divider)
-    
+            
     def get_divider_by_id(self, id):
         for d in self.dividers:
             if d.id == id:
