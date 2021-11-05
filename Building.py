@@ -149,16 +149,16 @@ class Building():
     @staticmethod
     def __print_zone(zone, axes, i, color):
         if isinstance(zone, AtomicZone):
-            for area in zone.area:
+            for area in zone.areas:
                 x_min, x_max, y_min, y_max = area.get_bounding_box()
                 left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
                 axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color))
                 
-            for polygone in zone.polygone:
+            for polygone in zone.polygon:
                 axes[i].add_patch(Polygon(polygone.to_array(), fill=True, alpha=0.1, color=color))
         
         elif isinstance(zone, CompositeZone):
-            for z in zone:
+            for z in zone.zones:
                 Building.__print_zone(z, axes, i, color)
 
 
