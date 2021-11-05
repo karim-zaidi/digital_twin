@@ -226,8 +226,8 @@ class Building():
         y = filtered_data[:][2]
         X = np.zeros((len(x),2))
         for i in range(len(X)):
-            X[i,0] = x[i][1]
-            X[i,1] = y[i][2]
+            X[i][0] = x[i][1]
+            X[i][1] = y[i][2]
         print(X)
 
         km = KMeans(n_clusters=n_clusters, init='random', n_init=10, max_iter=300, tol=1e-04, random_state=0)
