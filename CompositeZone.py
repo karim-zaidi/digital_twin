@@ -3,10 +3,10 @@ from Zone import Zone
 
 class CompositeZone(Zone):
 
-    def __init__(self, *kargs):
+    def __init__(self, zones):
         super().__init__()
         self.zones = []
-        self.add(kargs)
+        self.add(zones)
 
     def add(self, zone):
         assert isinstance(zone,(Zone,list,tuple))
