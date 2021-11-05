@@ -1,5 +1,3 @@
-from DividerList import DividerList
-
 from Floor import Floor
 
 from Area import Area

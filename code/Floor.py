@@ -1,4 +1,3 @@
-from DividerList import DividerList
 from Area import Area
 from Zone import Zone
 from Wall import Wall
