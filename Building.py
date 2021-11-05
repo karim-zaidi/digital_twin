@@ -114,8 +114,27 @@ class Building():
             for a in areas:
                 ar.append(floor.get_area_by_id(a))
 
-        ato_zone = AtomicZone(ar,polygon)
-        floor.add_zone(ato_zone)
+        atomic_zone = AtomicZone(ar,polygon)
+        floor.add_zone(atomic_zone)
+
+    
+    def add_composite_zone(self, floor_name, zones):
+        """
+        zones can be an ID or a list/tuple of IDs of already existing zones on the floor
+        """
+        assert len(zones)>0, 'A new composite zone needs at least one component zone'
+        floor = self.floors[floor_name]
+
+        if isinstance(zones,int):
+            zo = floor.get_zone_by_id(zones)
+        elif isinstance(zones,(list,tuple)):
+            zo = []
+            for z in zones:
+                zo.append(floor.get_zone_by_id(z))
+
+        composite_zone = CompositeZone(zo)
+        floor.add_zone(composite_zone)
+
 
 
     def merge_zone(self, zone, composite_zone):
@@ -142,6 +161,7 @@ class Building():
             rgb.append((r/256,g/256,b/256))  
         return rgb
     
+
     @staticmethod
     def __print_zone(zone, zone_id, axes, i, color):
         if isinstance(zone, AtomicZone):
@@ -149,9 +169,10 @@ class Building():
                 x_min, x_max, y_min, y_max = area.get_bounding_box()
                 left, bottom, width, height = (x_min, y_min, x_max - x_min, y_max - y_min)
                 axes[i].add_patch(Rectangle((left, bottom), width, height, alpha=0.1, facecolor=color, label=zone_id))
-                
-            for polygone in zone.polygon:
-                axes[i].add_patch(Polygon(polygone.to_array(), fill=True, alpha=0.1, color=color, label=zone_id))
+
+            poly = zone.polygon  
+            if len(poly) > 0:
+                axes[i].add_patch(Polygon(zone.polygon_to_array(), fill=True, alpha=0.1, color=color, label=zone_id))
         
         elif isinstance(zone, CompositeZone):
             for z in zone.zones:
