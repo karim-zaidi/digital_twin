@@ -1,14 +1,13 @@
-from abc import abstractmethod
-
-from numpy.lib.arraysetops import isin
-from Zone import Zone
-from Area import Area
 import numpy as np
+
+from Area import Area
 from Point import P
+from Zone import Zone
+
 
 class AtomicZone(Zone):
 
-    def __init__(self,area=[],polygon=[]):
+    def __init__(self, area=[], polygon=[]):
         super().__init__()
         self.__areas = []
         self.add_area(area)
@@ -21,6 +20,16 @@ class AtomicZone(Zone):
         return self.__areas
 
  
+    def add_area(self, area):
+        assert isinstance(area, (Area,list,tuple))
+        if isinstance(area,(list,(tuple))):
+            for a in area:
+                self.add_area(a)
+        elif isinstance(area,Area):
+            assert area.is_valid_area(), 'This area is not valid, in that it does not define a rectangle'
+            self.areas.append(area)
+
+
     # polygon
     @property
     def polygon(self):
@@ -35,18 +44,11 @@ class AtomicZone(Zone):
         assert AtomicZone.is_valid_polygon(polygon), 'The polygon is not valid'
         self.__polygon = polygon
 
-
-    # Methods
-    def add_area(self, area):
-        assert isinstance(area, (Area,list,tuple))
-        if isinstance(area,(list,(tuple))):
-            for a in area:
-                self.add_area(a)
-        elif isinstance(area,Area):
-            assert area.is_valid_area(), 'This area is not valid, in that it does not define a rectangle'
-            self.areas.append(area)
+    # TODO: add_polygon
+    # TODO: put public method in private when necessary
 
 
+    # Other methods
     def polygon_to_array(self):
         n = len(self.polygon)
         array = np.zeros((n,2))
@@ -190,7 +192,8 @@ class AtomicZone(Zone):
 
 
     def contains(self, datapoint):
-        x,y = datapoint[1],datapoint[2]
+        # TODO: specify and explain the size of datapoint
+        x, y = datapoint[1], datapoint[2]
         p = P(x,y)
         if any(a.contains(datapoint) for a in self.areas):
             return True
