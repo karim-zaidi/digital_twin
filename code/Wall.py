@@ -60,22 +60,22 @@ class Wall(Element):
 
     # Methods
     @staticmethod
-    def is_inside_element(e1, e2):
-        """Check if e1 has a coordinate inside e2"""
+    def __is_inside_element(e1, e2):
+        """Check if e1 has at least one coordinate inside e2"""
         e1_x_min, e1_x_max = e1.get_x_coords()
         e1_y_min, e1_y_max = e1.get_y_coords()
 
         e2_x_min, e2_x_max = e2.get_x_coords()
         e2_y_min, e2_y_max = e2.get_y_coords()
 
-        # if it's parallel to the y axis
+        # if it's parallel to the x axis
         if e1_y_max == e1_y_min:
             if e1_x_max >= e2_x_min and e1_x_max <= e2_x_max:
                 return True
             elif e1_x_min >= e2_x_min and e1_x_min <= e2_x_max:
                 return True
         
-        # elif it's parallel to the x axis
+        # elif it's parallel to the y axis
         elif e1_x_max == e1_x_min:
             if e1_y_max >= e2_y_min and e1_y_max <= e2_y_max:
                 return True
@@ -85,11 +85,12 @@ class Wall(Element):
 
 
     def __has_room_for(self, e):
+        """Check if there is room in the wall for e"""
         elements = self.windows + self.doors
 
         for element in elements:
             # check if the e has a coordinate inside element
-            if self.is_inside_element(e, element) or self.is_inside_element(element, e):
+            if self.__is_inside_element(e, element) or self.__is_inside_element(element, e):
                 return False
         return True
 
