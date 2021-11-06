@@ -62,7 +62,9 @@ class Building():
         floor.rename(self,new_name) 
     
 
-    # Other methods
+    # Elements
+
+    ## Wall
     def add_wall(self, floor_name, p1, p2):
         floor = self.floors[floor_name]
         wall = Wall(p1, p2)
@@ -76,7 +78,7 @@ class Building():
         assert not wall.is_used, 'This wall cannot be removed as it is used in an area'
         floor.remove_divider_by_id(id)
 
-
+    ## Boundary
     def add_boundary(self, floor_name, p1, p2):
         floor = self.floors[floor_name]
         boundary = Boundary(p1, p2)
@@ -91,6 +93,7 @@ class Building():
         floor.remove_divider_by_id(id)
 
 
+    ## Window
     def add_window(self, floor_name, wall_id, p1, p2):
         floor = self.floors[floor_name]
         wall = floor.get_divider_by_id(wall_id)
@@ -112,6 +115,7 @@ class Building():
             raise ValueError(f'There is no window with such an id on this ({floor_name}) floor')
 
 
+    ## Door
     def add_door(self, floor_name, wall_id, p1, p2):
         floor = self.floors[floor_name]
         wall = floor.get_divider_by_id(wall_id)
@@ -133,6 +137,7 @@ class Building():
             raise ValueError(f'There is no door with such an id on this ({floor_name}) floor')
 
 
+    # Area
     def add_area(self, floor_name, name, dividers = []):
         """
         dividers has to be a list/tuple of 4 IDs of already existing dividers on the floor
@@ -158,6 +163,8 @@ class Building():
         floor.remove_area_by_id(id)
 
 
+    # Zone
+    # TODO: add remove methods for zones
     def add_atomic_zone(self, floor_name, areas = [], polygon = []):
         """
         areas can be an ID or a list/tuple of IDs of already existing areas on the floor
@@ -206,6 +213,8 @@ class Building():
         composite_z.add(z)
 
 
+    # Other Methods
+    # TODO: Make cluster work
     def __clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
         # Keeping only relevant timestamps
         filtered_data = data[data[:,0] >= ti]
@@ -242,7 +251,7 @@ class Building():
 
 
     @staticmethod
-    def get_colors(n):
+    def __get_colors(n):
         """Generates a list of RGB values at random"""
         rgb = [] 
         r = int(random.random() * 256) 
@@ -349,8 +358,9 @@ class Building():
                 if len(floor.zones) > 0:
                     show_legend = True
                     legends = []
+                    
                     # generating len(floor.zones) color at random
-                    colors = Building.get_colors(len(floor.zones))
+                    colors = Building.__get_colors(len(floor.zones))
                     
                     for zone, color in zip(floor.zones, colors):
                         if not zone.is_component:
@@ -367,6 +377,7 @@ class Building():
                 if test and floor_name == name:
                     # number of color needed
                     m = len(set(cluster_name[4]))
+
                     # taking m different colors
                     c = [i for i in range(m)]
                     axes[i].scatter(x, y, c=[c[i] for i in cluster_name[4]])
