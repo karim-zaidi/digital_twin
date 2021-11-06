@@ -5,9 +5,13 @@ class CompositeZone(Zone):
 
     def __init__(self, zones):
         super().__init__()
-        self.zones = []
+        self.__zones = []
         self.add(zones)
 
+
+    @property
+    def zones(self):
+        return self.__zones
 
     # Composition Pattern methods
     def add(self, zone):
@@ -22,10 +26,6 @@ class CompositeZone(Zone):
 
     def remove(self, zone):
         self.zones.remove(zone)
-
-
-    def get_zones(self):
-        return self.zones
 
 
     # Other methods
