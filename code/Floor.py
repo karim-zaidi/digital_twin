@@ -6,7 +6,8 @@ from Boundary import Boundary
 class Floor():
 
     def __init__(self, name):
-        # We only allow to create an empty floor, everything is handled by the building
+        # We only allow to create an empty floor, 
+        # everything is handled from the Building class
         self.__name = name
 
         self.__dividers = []
