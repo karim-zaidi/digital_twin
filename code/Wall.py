@@ -68,14 +68,14 @@ class Wall(Element):
         e2_x_min, e2_x_max = e2.get_x_coords()
         e2_y_min, e2_y_max = e2.get_y_coords()
 
-        # if it's parallel to the y axis
+        # if it's parallel to the x axis
         if e1_y_max == e1_y_min:
             if e1_x_max >= e2_x_min and e1_x_max <= e2_x_max:
                 return True
             elif e1_x_min >= e2_x_min and e1_x_min <= e2_x_max:
                 return True
         
-        # elif it's parallel to the x axis
+        # elif it's parallel to the y axis
         elif e1_x_max == e1_x_min:
             if e1_y_max >= e2_y_min and e1_y_max <= e2_y_max:
                 return True
@@ -85,6 +85,7 @@ class Wall(Element):
 
 
     def __has_room_for(self, e):
+        """Check if there is room in the wall for e"""
         elements = self.windows + self.doors
 
         for element in elements:
