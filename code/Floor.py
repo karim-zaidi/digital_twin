@@ -5,17 +5,13 @@ from Boundary import Boundary
 
 class Floor():
 
-    def __init__(self, name, dividers = [], areas = [], zones = []):
+    def __init__(self, name):
+        # We only allow to create an empty floor, everything is handled by the building
         self.__name = name
 
         self.__dividers = []
-        self.add_divider(dividers)
-
         self.__areas = []
-        self.add_area(areas)
-
         self.__zones = []
-        self.add_zone(zones)
 
 
     # name

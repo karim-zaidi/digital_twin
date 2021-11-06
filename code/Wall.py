@@ -61,7 +61,7 @@ class Wall(Element):
     # Methods
     @staticmethod
     def __is_inside_element(e1, e2):
-        """Check if e1 has a coordinate inside e2"""
+        """Check if e1 has at least one coordinate inside e2"""
         e1_x_min, e1_x_max = e1.get_x_coords()
         e1_y_min, e1_y_max = e1.get_y_coords()
 
