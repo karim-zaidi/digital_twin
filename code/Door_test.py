@@ -10,7 +10,8 @@ class Door_test(unittest.TestCase):
         p1, p2 = P(0, 0), P(1,0)
         door = Door(p1, p2)
         self.assertIsInstance(door, Door)
-        self.assertTrue(door.p1 == p1 and door.p2 == p2)
+        self.assertEqual(door.p1, p1)
+        self.assertEqual(door.p2, p2)
 
 
     def test_1_create_door_error(self):
@@ -27,8 +28,8 @@ class Door_test(unittest.TestCase):
         # changing attribut
         new_p1, new_p2 = P(2,0), P(10,0)
         door.p1, door.p2 = new_p1, new_p2
-
-        self.assertTrue(door.p1 == new_p1 and door.p2 == new_p2)
+        self.assertEqual(door.p1, new_p1)
+        self.assertEqual(door.p2, new_p2)
 
 
     def test_3_attribut_error(self):
