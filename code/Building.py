@@ -268,6 +268,7 @@ class Building():
                 d[i] = datapoint
         d = d[~np.all(d == 0, axis=1)] # Removing lines with only zeros
         filtered_data = d
+        print(f'There are {len(filtered_data)} relevant data points')
 
         x = filtered_data[:,1]
         y = filtered_data[:,2]

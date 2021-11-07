@@ -189,7 +189,7 @@ class AtomicZone(Zone):
 
 
     def contains(self, datapoint):
-        # TODO: specify and explain the size of datapoint
+        # datapoint is a 1x3 np array: [timestamp, x, y]
         x, y = datapoint[1], datapoint[2]
         p = P(x,y)
         if any(a.contains(datapoint) for a in self.areas):
