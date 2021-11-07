@@ -41,11 +41,8 @@ class AtomicZone(Zone):
         assert isinstance(polygon, (list,tuple))
         for p in polygon:
             assert isinstance(p, P)
-        assert AtomicZone.is_valid_polygon(polygon), 'The polygon is not valid'
+        assert AtomicZone.__is_valid_polygon(polygon), 'The polygon is not valid'
         self.__polygon = polygon
-
-    # TODO: add_polygon
-    # TODO: put public method in private when necessary
 
 
     # Other methods
@@ -58,7 +55,7 @@ class AtomicZone(Zone):
 
 
     @staticmethod
-    def is_valid_polygon(pts):
+    def __is_valid_polygon(pts):
         n = len(pts)
 
         if n==1 or n==2:
@@ -66,7 +63,7 @@ class AtomicZone(Zone):
 
         # Checking that no 3 consecutive vertices define a null angle
         for i in range(n):
-            if AtomicZone.angle(pts[i-2],pts[i-1],pts[i]) == 0:
+            if AtomicZone.__angle(pts[i-2],pts[i-1],pts[i]) == 0:
                 return False
 
         # Testing each segment against the others (except its two neighbors) for an intersection point, which is forbidden
@@ -74,14 +71,14 @@ class AtomicZone(Zone):
         for i in range(n-2):
             for j in range(i+2,n): # Tests for j<i have already been done (symmetry of the test)
                 if (i,j) != (0,n-1): # So as not to test the first segment against the last one, since they are neighbors
-                    if AtomicZone.check_secant(segments[i],segments[j]):
+                    if AtomicZone.__check_secant(segments[i],segments[j]):
                         print('Invalid polygon: these two segments are secant: '+str((segments[i],segments[j])))
                         return False
         return True
 
 
     @staticmethod
-    def check_secant(s1,s2):
+    def __check_secant(s1,s2):
         """Returns if the two segments have any point in common (ie. shared vertex, itersection point, etc.)"""
         #xij = x coord for segment i, point j 
         x11 = s1[0].x
@@ -144,7 +141,7 @@ class AtomicZone(Zone):
 
 
     @staticmethod
-    def angle(p1, p2, p3):
+    def __angle(p1, p2, p3):
         """Return the oriented angle p1-p2-p3, ie the oriented angle between vectors p1-p2 and p3-p2
         
         param: p1 (P): first point
@@ -169,7 +166,7 @@ class AtomicZone(Zone):
             return ang
 
     
-    def polygon_contains(self, p):
+    def __polygon_contains(self, p):
         """Return True if point p is contained in the polygon defined by consecutive vertices in pts list
         
         param: p (P): point p to check if it is inside the polygon
@@ -182,7 +179,7 @@ class AtomicZone(Zone):
         epsilon = 1
         sum = 0
         for i in range(len(pts)):
-            ang = AtomicZone.angle(pts[i-1], p, pts[i])
+            ang = AtomicZone.__angle(pts[i-1], p, pts[i])
             if ang in (-180,180): # If p is between two consecutive vertices, then it is 'inside' the polygon
                 return True
             sum += ang
@@ -197,4 +194,4 @@ class AtomicZone(Zone):
         p = P(x,y)
         if any(a.contains(datapoint) for a in self.areas):
             return True
-        return self.polygon_contains(p)
+        return self.__polygon_contains(p)

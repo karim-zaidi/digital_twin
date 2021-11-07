@@ -164,7 +164,6 @@ class Building():
 
 
     # Zone
-    # TODO: add remove methods for zones
     def add_atomic_zone(self, floor_name, areas = [], polygon = []):
         """
         areas can be an ID or a list/tuple of IDs of already existing areas on the floor
@@ -185,6 +184,27 @@ class Building():
         atomic_zone = AtomicZone(areas_temp,polygon)
         floor.add_zone(atomic_zone)
 
+
+    def add_area_to_zone(self, floor_name, zone_id, areas_id):
+        floor = self.floors[floor_name]
+        zone = floor.get_zone_by_id(zone_id)
+        if isinstance(areas_id,int):
+            areas_temp = floor.get_area_by_id(areas_id)
+            areas_temp.is_now_used()
+        elif isinstance(areas_id,(list,tuple)):
+            areas_temp = []
+            for a in areas_id:
+                area = floor.get_area_by_id(a)
+                area.is_now_used()
+                areas_temp.append(area)
+        zone.add_area(areas_temp)
+
+
+    def set_zone_polygon(self, floor_name, zone_id, polygon):
+        floor = self.floors[floor_name]
+        zone = floor.get_zone_by_id(zone_id)
+        zone.polygon = polygon
+
     
     def add_composite_zone(self, floor_name, zones):
         """
@@ -204,6 +224,19 @@ class Building():
         floor.add_zone(composite_zone)
 
 
+    def remove_zone(self, floor_name, id):
+        floor = self.floors[floor_name]
+        zone = floor.get_zone_by_id(id)
+        assert not zone.is_used, 'This zone cannot be removed as it is a component of another zone'
+        if isinstance(zone, CompositeZone):
+            for z in zone.zones:
+                z.is_no_longer_used()
+        elif isinstance(zone, AtomicZone):
+            for a in zone.areas:
+                a.is_no_longer_used()
+        floor.remove_zone_by_id(id)
+
+
     def merge_zone(self, floor_name, zone, composite_zone):
         floor = self.floors[floor_name]
         z = floor.get_zone_by_id(zone)
@@ -211,6 +244,16 @@ class Building():
         assert isinstance(z,Zone)
         assert isinstance(composite_z,CompositeZone)
         composite_z.add(z)
+
+
+    def detach_zone_from_zone(self, floor_name, component_zone, composite_zone):
+        floor = self.floors[floor_name]
+        cpnt = floor.get_zone_by_id(component_zone)
+        cpst = floor.get_zone_by_id(composite_zone)
+        assert isinstance(cpst, CompositeZone), 'composite_zone has to be a CompositeZone'
+        assert cpnt in cpst.zones, 'component_zone is not a component of composite_zone'
+        cpnt.is_no_longer_used()
+        cpst.remove(cpnt)
 
 
     # Other Methods
@@ -272,7 +315,7 @@ class Building():
     @staticmethod
     def __print_zone(zone, zone_id, axes, i, color, legends):
         # updating the legend
-        if (not Patch(color=color, label=zone_id) in legends) and (not zone.is_component):
+        if (not Patch(color=color, label=zone_id) in legends) and (not zone.is_used):
             legends.append(Patch(color=color, label=zone_id))
 
         # drawing the zone
@@ -363,7 +406,7 @@ class Building():
                     colors = Building.__get_colors(len(floor.zones))
                     
                     for zone, color in zip(floor.zones, colors):
-                        if not zone.is_component:
+                        if not zone.is_used:
                             Building.__print_zone(zone, zone.id, axes, i, color, legends)
                     
                 if show_legend:

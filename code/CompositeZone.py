@@ -21,7 +21,7 @@ class CompositeZone(Zone):
                 self.add(z)
         elif isinstance(zone,Zone):
             self.zones.append(zone)
-            zone.is_component = True
+            zone.is_now_used()
 
 
     def remove(self, zone):

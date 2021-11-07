@@ -105,3 +105,8 @@ class Floor():
             if z.id == id:
                 return z
         raise ValueError(f'There is no zone with such an id on this ({self.name}) floor')
+
+
+    def remove_zone_by_id(self, id):
+        zone = self.get_zone_by_id(id)
+        self.zones.remove(zone)
