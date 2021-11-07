@@ -1,23 +1,19 @@
-from numpy.lib.arraysetops import isin
-from sklearn.utils import _print_elapsed_time
-from Floor import Floor
-
-from Area import Area
-
-from Zone import Zone
-from AtomicZone import AtomicZone
-from CompositeZone import CompositeZone
-
-from Wall import Wall
-from Boundary import Boundary
-from Window import Window
-from Door import Door
+import random
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon, Patch
-import random
 import numpy as np
+from matplotlib.patches import Patch, Polygon
 from sklearn.cluster import KMeans
+
+from Area import Area
+from AtomicZone import AtomicZone
+from Boundary import Boundary
+from CompositeZone import CompositeZone
+from Door import Door
+from Floor import Floor
+from Wall import Wall
+from Window import Window
+from Zone import Zone
 
 
 class Building():
