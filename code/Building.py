@@ -67,12 +67,12 @@ class Building():
         floor.add_divider(wall)
 
 
-    def remove_wall(self, floor_name, id):
+    def remove_wall(self, floor_name, wall_id):
         floor = self.floors[floor_name]
-        wall = floor.get_divider_by_id(id)
+        wall = floor.get_divider_by_id(wall_id)
         assert isinstance(wall, Wall), 'This ID does not correspond to a wall'
         assert not wall.is_used, 'This wall cannot be removed as it is used in an area'
-        floor.remove_divider_by_id(id)
+        floor.remove_divider_by_id(wall_id)
 
 
     ## Boundary
@@ -82,12 +82,12 @@ class Building():
         floor.add_divider(boundary)
 
 
-    def remove_boundary(self, floor_name, id):
+    def remove_boundary(self, floor_name, boundary_id):
         floor = self.floors[floor_name]
-        boundary = floor.get_divider_by_id(id)
+        boundary = floor.get_divider_by_id(boundary_id)
         assert isinstance(boundary, Boundary), 'This ID does not correspond to a boundary'
         assert not boundary.is_used, 'This boundary cannot be removed as it is used in an area'
-        floor.remove_divider_by_id(id)
+        floor.remove_divider_by_id(boundary_id)
 
 
     ## Window
@@ -99,14 +99,14 @@ class Building():
         wall.add_window(window)
 
     
-    def remove_window(self, floor_name, id):
+    def remove_window(self, floor_name, window_id):
         floor = self.floors[floor_name]
         done = False
         for wall in floor.dividers:
             if isinstance(wall, Wall):
                 for window in wall.windows:
-                    if window.id == id:
-                        wall.remove_element_by_id(id)
+                    if window.id == window_id:
+                        wall.remove_element_by_id(window_id)
                         done = True
         if not done:
             raise ValueError(f'There is no window with such an id on this ({floor_name}) floor')
@@ -121,28 +121,28 @@ class Building():
         wall.add_door(door)
 
 
-    def remove_door(self, floor_name, id):
+    def remove_door(self, floor_name, door_id):
         floor = self.floors[floor_name]
         done = False
         for wall in floor.dividers:
             if isinstance(wall, Wall):
                 for door in wall.doors:
-                    if door.id == id:
-                        wall.remove_element_by_id(id)
+                    if door.id == door_id:
+                        wall.remove_element_by_id(door_id)
                         done = True
         if not done:
             raise ValueError(f'There is no door with such an id on this ({floor_name}) floor')
 
 
     # Area
-    def add_area(self, floor_name, name, dividers = []):
+    def add_area(self, floor_name, name, dividers_id = []):
         """
         dividers has to be a list/tuple of 4 IDs of already existing dividers on the floor
         """
         floor = self.floors[floor_name]
 
         div = []
-        for d in dividers:
+        for d in dividers_id:
             divider = floor.get_divider_by_id(d)
             divider.is_now_used()
             div.append(divider)
@@ -151,29 +151,29 @@ class Building():
         floor.add_area(area)
 
 
-    def remove_area(self, floor_name, id):
+    def remove_area(self, floor_name, area_id):
         floor = self.floors[floor_name]
-        area = floor.get_area_by_id(id)
+        area = floor.get_area_by_id(area_id)
         assert not area.is_used, 'This area cannot be removed as it is used in a zone'
         for divider in area.walls+area.boundaries:
             divider.is_no_longer_used()
-        floor.remove_area_by_id(id)
+        floor.remove_area_by_id(area_id)
 
 
     # Zone
-    def add_atomic_zone(self, floor_name, areas = [], polygon = []):
+    def add_atomic_zone(self, floor_name, areas_id = [], polygon = []):
         """
         areas can be an ID or a list/tuple of IDs of already existing areas on the floor
         """
-        assert len(list(areas))+len(polygon)>0, 'A new AtomicZone needs at least an area or a polygon'
+        assert len(list(areas_id))+len(polygon)>0, 'A new AtomicZone needs at least an area or a polygon'
         floor = self.floors[floor_name]
 
-        if isinstance(areas,int):
-            areas_temp = floor.get_area_by_id(areas)
+        if isinstance(areas_id,int):
+            areas_temp = floor.get_area_by_id(areas_id)
             areas_temp.is_now_used()
-        elif isinstance(areas,(list,tuple)):
+        elif isinstance(areas_id,(list,tuple)):
             areas_temp = []
-            for a in areas:
+            for a in areas_id:
                 area = floor.get_area_by_id(a)
                 area.is_now_used()
                 areas_temp.append(area)
@@ -203,27 +203,27 @@ class Building():
         zone.polygon = polygon
 
     
-    def add_composite_zone(self, floor_name, zones):
+    def add_composite_zone(self, floor_name, zones_id):
         """
         zones can be an ID or a list/tuple of IDs of already existing zones on the floor
         """
-        assert zones != None and zones != [] and zones != (), 'A new composite zone needs at least one component zone'
+        assert zones_id != None and zones_id != [] and zones_id != (), 'A new composite zone needs at least one component zone'
         floor = self.floors[floor_name]
 
-        if isinstance(zones,int):
-            zones_temp = floor.get_zone_by_id(zones)
-        elif isinstance(zones,(list,tuple)):
+        if isinstance(zones_id,int):
+            zones_temp = floor.get_zone_by_id(zones_id)
+        elif isinstance(zones_id,(list,tuple)):
             zones_temp = []
-            for z in zones:
+            for z in zones_id:
                 zones_temp.append(floor.get_zone_by_id(z))
 
         composite_zone = CompositeZone(zones_temp)
         floor.add_zone(composite_zone)
 
 
-    def remove_zone(self, floor_name, id):
+    def remove_zone(self, floor_name, zone_id):
         floor = self.floors[floor_name]
-        zone = floor.get_zone_by_id(id)
+        zone = floor.get_zone_by_id(zone_id)
         assert not zone.is_used, 'This zone cannot be removed as it is a component of another zone'
         if isinstance(zone, CompositeZone):
             for z in zone.zones:
@@ -231,22 +231,22 @@ class Building():
         elif isinstance(zone, AtomicZone):
             for a in zone.areas:
                 a.is_no_longer_used()
-        floor.remove_zone_by_id(id)
+        floor.remove_zone_by_id(zone_id)
 
 
-    def merge_zone(self, floor_name, zone, composite_zone):
+    def merge_zone(self, floor_name, component_zone_id, composite_zone_id):
         floor = self.floors[floor_name]
-        z = floor.get_zone_by_id(zone)
-        composite_z = floor.get_zone_by_id(composite_zone)
+        z = floor.get_zone_by_id(component_zone_id)
+        composite_z = floor.get_zone_by_id(composite_zone_id)
         assert isinstance(z,Zone)
         assert isinstance(composite_z,CompositeZone)
         composite_z.add(z)
 
 
-    def detach_zone_from_zone(self, floor_name, component_zone, composite_zone):
+    def detach_zone_from_zone(self, floor_name, component_zone_id, composite_zone_id):
         floor = self.floors[floor_name]
-        cpnt = floor.get_zone_by_id(component_zone)
-        cpst = floor.get_zone_by_id(composite_zone)
+        cpnt = floor.get_zone_by_id(component_zone_id)
+        cpst = floor.get_zone_by_id(composite_zone_id)
         assert isinstance(cpst, CompositeZone), 'composite_zone has to be a CompositeZone'
         assert cpnt in cpst.zones, 'component_zone is not a component of composite_zone'
         cpnt.is_no_longer_used()
@@ -371,7 +371,7 @@ class Building():
                         for window in div.windows :
                             x_min, x_max = window.get_x_coords()
                             y_min, y_max = window.get_y_coords()
-                            axes[i].plot((x_min, x_max), (y_min, y_max), c='cyan')
+                            axes[i].plot((x_min, x_max), (y_min, y_max), c='cyan', linewidth=5)
 
                             # display id
                             axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(window.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
@@ -379,7 +379,7 @@ class Building():
                         for door in div.doors :
                             x_min, x_max = door.get_x_coords()
                             y_min, y_max = door.get_y_coords()
-                            axes[i].plot((x_min, x_max), (y_min, y_max), c='chocolate')    
+                            axes[i].plot((x_min, x_max), (y_min, y_max), c='chocolate', linewidth=5)    
 
                             # display id
                             axes[i].text(0.1*x_min + 0.9*x_max, 0.1*y_min +0.9*y_max, str(door.id), c='black', style='italic', bbox={'facecolor': 'white'}, ha='center', va='center')
