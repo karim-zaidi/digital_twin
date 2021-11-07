@@ -51,9 +51,9 @@ class Building():
         return True
     
 
-    def create_floor(self, name, dividers = [], areas = [], zones = []):
+    def create_floor(self, name):
         if self.check_availability(name):
-            floor = Floor(name, dividers, areas, zones)
+            floor = Floor(name)
             self.floors[name] = floor
 
 
@@ -77,6 +77,7 @@ class Building():
         assert isinstance(wall, Wall), 'This ID does not correspond to a wall'
         assert not wall.is_used, 'This wall cannot be removed as it is used in an area'
         floor.remove_divider_by_id(id)
+
 
     ## Boundary
     def add_boundary(self, floor_name, p1, p2):
@@ -262,7 +263,7 @@ class Building():
         # Keeping only relevant timestamps
         filtered_data = data[data[:,0] >= ti]
         filtered_data = filtered_data[filtered_data[:,0] <= tf]
-        # print(filtered_data)
+        print(filtered_data)
 
         # Keeping only datapoints inside the zone
         floor = self.floors[floor_name]

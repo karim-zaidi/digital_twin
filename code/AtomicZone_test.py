@@ -134,7 +134,6 @@ class AtomicZone_test(unittest.TestCase):
 
 
     def test_6_add_single_polygon(self):
-        # TODO: uncomment
         # define atomiczone
         atomiczone = AtomicZone()
         
@@ -142,9 +141,9 @@ class AtomicZone_test(unittest.TestCase):
         polygon = [P(0,0),P(5,0),P(9,9),P(0,5)]
 
         # add polygon
-        # atomiczone.add_polygon(polygon)
+        atomiczone.polygon = polygon
 
-        #self.assertEqual(atomiczone.polygon, [polygon])
+        self.assertEqual(atomiczone.polygon, polygon)
 
 
     def test_7_add_multiple_polygon_in_one_go(self):
@@ -194,7 +193,9 @@ class AtomicZone_test(unittest.TestCase):
     def test_10_polygon_contain(self):
         atomiczone = AtomicZone(polygon = [P(0,0),P(5,0),P(9,9),P(0,5)])
         self.assertTrue(atomiczone.contains([0, 0, 0]))
+        self.assertTrue(atomiczone.contains([0, 2, 2]))
         self.assertFalse(atomiczone.contains([0, 10, 10]))
+        self.assertFalse(atomiczone.contains([0, 6, 0]))
 
 
 
