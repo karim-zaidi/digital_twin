@@ -258,30 +258,24 @@ class Building():
 
 
     # Other Methods
-    # TODO: Make cluster work
     def __clusters(self, floor_name, data, zone_id, n_clusters = 4, ti = 0, tf = np.inf):
         # Keeping only relevant timestamps
         filtered_data = data[data[:,0] >= ti]
         filtered_data = filtered_data[filtered_data[:,0] <= tf]
-        print(filtered_data)
 
         # Keeping only datapoints inside the zone
         floor = self.floors[floor_name]
         zone = floor.get_zone_by_id(zone_id)
-        d = []
-        for datapoint in filtered_data:
+        d = np.zeros((len(filtered_data),3))
+        for i,datapoint in enumerate(filtered_data):
             if zone.contains(datapoint):
-                d.append(datapoint)
+                d[i] = datapoint
+        d = d[~np.all(d == 0, axis=1)] # Removing lines with only zeros
         filtered_data = d
 
-        x = filtered_data[:][1]
-        print('x : '+str(x))
-        y = filtered_data[:][2]
-        X = np.zeros((len(x),2))
-        for i in range(len(X)):
-            X[i,0] = x[i][1]
-            X[i,1] = y[i][2]
-        print(X)
+        x = filtered_data[:,1]
+        y = filtered_data[:,2]
+        X = np.column_stack((x,y))
 
         km = KMeans(n_clusters=n_clusters, init='random', n_init=10, max_iter=300, tol=1e-04, random_state=0)
         cluster = km.fit_predict(X)
@@ -420,11 +414,11 @@ class Building():
 
                 if test and floor_name == name:
                     # number of color needed
-                    m = len(set(cluster_name[4]))
+                    m = len(set(cluster_name))
 
                     # taking m different colors
                     c = [i for i in range(m)]
-                    axes[i].scatter(x, y, c=[c[i] for i in cluster_name[4]])
+                    axes[i].scatter(x, y, c=[c[i] for i in cluster_name])
                     
             # deleting the last (inexisting) floor
             f.delaxes(axes[n-1])
